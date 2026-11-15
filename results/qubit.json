@@ -1,0 +1,1783 @@
+{
+ "_meta": {
+  "schema_version": "1.0",
+  "date": "2026-07-27",
+  "module": "M6 -- TBG gatemon with a photonic control plane (paper 2)",
+  "claim_discipline": "TBG coherence has never been measured. Paper 2 is a DESIGN STUDY: every coherence number in this export is parametric in the quasiparticle fraction x_qp or in the 1/f gate-noise amplitude A, and no absolute T1 or T2 value is claimed for a TBG junction anywhere.",
+  "generator": "scripts/export_qubit.py",
+  "schema_note": "M6_BRIEF.md P7 schema {design, budgets(T1 stack, T2 maps), readout_window, two_cavity, provenance}, extended with conventions / allocation / two_qubit_sketch / open_items so the P2-P6 corrections are carried explicitly. Every superseded milestone-1 value is retained in a *_reference block -- the corrections do not erase the references.",
+  "interface_position": "fourth root export, after material.json (M1), junction.json (M3) and photonics.json (M2/M4); consumes all three plus qubit_targets.json.",
+  "deterministic": true,
+  "rng": "none -- no stochastic step anywhere in the M6 chain (P3/P5/P6 log seed 0 as unused)"
+ },
+ "design": {
+  "EJ_GHz": 149.0050531997167,
+  "EJ_over_EC": 100,
+  "EC_GHz": 1.490050531997167,
+  "C_Sigma_fF": 12.999713035702571,
+  "f01_GHz": 40.5966287014581,
+  "anharm_GHz": -1.6323417967519944,
+  "eps1_Hz": 37.42631804470875,
+  "n01": 1.3047875496582912,
+  "selection_criterion": "smallest E_J/E_C with eps1 < 10 kHz AND |anharmonicity| >= 0.5 GHz (M6_BRIEF.md Sec. 1); ratio 100 wins",
+  "f01_tunability_GHz": [
+   23.687917357656662,
+   40.5966287014581
+  ],
+  "f01_tunability_caveat": "realisable only in the tracking-drive scenario -- see allocation.fork_statement and readout_window.constraints C5",
+  "control_tone_GHz": 40.5966287014581,
+  "recomputed_check": {
+   "source": "qubit.design_point() / qubit.dome.sweet_spot_report()",
+   "f01_GHz": 40.5966287014581,
+   "f01_reldev": 0.0,
+   "anharm_GHz": -1.6323417967519944,
+   "anharm_reldev": 0.0,
+   "n01": 1.3047875496582915,
+   "n01_reldev": 1.7017682685827454e-16,
+   "eps1_Hz": 37.42631804470875,
+   "eps1_reldev": 0.0,
+   "EC_GHz": 1.490050531997167,
+   "C_fF": 12.999713035702571,
+   "D1_apex_GHz": 0.0,
+   "D2_apex_GHz": -168.84229756897184,
+   "D1_off_nu_m2p5_GHz": 17.233673929339943,
+   "note": "bit-exact reproduction of the reference scan; deviations are exactly 0"
+  },
+  "eps1_numerics_rule": {
+   "finding": "eps1 is ULP-conditioned already at ratio 100: a 1-ULP change in E_J moves float64 eps1 by 3.4e-5 relative while f01 is stable to 1e-14",
+   "float64_floor_measured_vs_mpmath": {
+    "150": -0.006,
+    "200": -0.28,
+    "300": "4.5 decades high, sign of the 200->300 step not build-stable"
+   },
+   "production_rule": "use qubit.spectrum.eps1_mp (Sturm bisection, dps=60) for any ratio >= 150",
+   "src": "paper/decisions.md 2026-07-27 'eps1 is ULP-conditioned already at ratio 100'"
+  },
+  "gates": {
+   "honest_coherent_floor_ns": 1.6044397958489334,
+   "honest_coherent_floor_ns_1e3": 1.2866864053529807,
+   "QUOTE_THIS": true,
+   "quote_this_flag": "THE PAPER MUST QUOTE 1.6 ns, NOT 1.0 ns. The 1.0112 ns figure is leakage-only; with both the amplitude and the DRAG frame calibrated, max(P0, P2) clears 1e-4 only at 1.6044 ns.",
+   "metric": "max(P0, P2) after calibrating both amplitude and DRAG frame s",
+   "claim": "coherent errors only -- no decoherence, not a fidelity",
+   "leakage_only_floor_ns": {
+    "drag": {
+     "1e-03": 0.8280872209925494,
+     "1e-04": 1.0111693792084075
+    },
+    "gaussian": {
+     "1e-03": 1.266178590360779,
+     "1e-04": 2.1743133981126386
+    },
+    "speedup_drag_over_gaussian": {
+     "1e-03": 1.529040127974842,
+     "1e-04": 2.1502959274882283
+    },
+    "flag": "LEAKAGE-ONLY -- superseded for paper quoting by honest_coherent_floor_ns"
+   },
+   "drag_params": {
+    "definition": "Om_y(t) = -q E'(t)/delta; first-order DRAG is q = 1",
+    "q_opt_parabolic": 1.040518733755237,
+    "gain_q1_over_qopt": 1.1944335814052778,
+    "quadrature_ratio_Omy_over_Omx_at_1e4_floor": 0.2705516168817734,
+    "quadrature_rule": "Om_y/Om_x = 0.2736 ns / t_g (measured = analytic)",
+    "Omx_peak_GHz_at_1e4_floor": 0.9025347996418792,
+    "Omy_peak_GHz_at_1e4_floor": 0.24418224933517785,
+    "sigma_ns_at_1e4_floor": 0.2527923448021019,
+    "frame_correction_s_measured": -1.0571630418376265,
+    "frame_correction_note": "s -> -1.000 confirms the Motzoi first-order frame correction; amplitude calibration alone leaves P0 = 0.0726 at that t_g, four orders above the leakage"
+   },
+   "leakage_monotone_from_t_g_ns_gaussian": 1.608010949154808,
+   "leakage_monotone_from_t_g_ns_drag": 2.62964425765395,
+   "leakage_monotonicity": {
+    "gaussian": {
+     "monotone_decreasing": false,
+     "monotone_from_t_g_ns": 1.608010949154808,
+     "n_monotonicity_violations": 2,
+     "monotonicity_violation_t_g_ns": [
+      1.4219587626803538,
+      1.5121260726661094
+     ]
+    },
+    "drag": {
+     "monotone_decreasing": false,
+     "monotone_from_t_g_ns": 2.62964425765395,
+     "n_monotonicity_violations": 4,
+     "monotonicity_violation_t_g_ns": [
+      1.2574334296829355,
+      1.337168083609858,
+      1.4219587626803538,
+      2.472839905676811
+     ]
+    },
+    "drag_threshold_crossings": {
+     "1e-03": {
+      "n_crossings": 1,
+      "bracket_ns": [
+       [
+        0.817669885592547,
+        0.8695188533511247
+       ]
+      ]
+     },
+     "1e-04": {
+      "n_crossings": 1,
+      "bracket_ns": [
+       [
+        0.9832885969559209,
+        1.0456395525912734
+       ]
+      ]
+     }
+    },
+    "extraction_rule": "Leakage is NOT globally monotone in t_g in either envelope, so both quoted DRAG floors are extracted at the LAST threshold crossing. On the scanned 61-point grid each DRAG threshold is crossed exactly once, so 'last crossing' and 'only crossing' coincide -- the extraction is unambiguous WITHOUT appealing to a monotone region, and neither DRAG floor lies inside one (the DRAG onset is 2.6296 ns, the Gaussian onset 1.6080 ns).",
+    "src": "out/m6/p6_gates.json:gate_floor.{gaussian,drag}"
+   },
+   "ladder_element_n12_over_n01": 1.3852259877480004,
+   "numerics": "fixed-step RK4, 3-level rotating-frame TDSE; step count from a 200 steps-per-period floor with a 2000-step minimum; amplitude calibrated by 24-iteration golden section; vectorised -- one integrator call per scan"
+  },
+  "thermal": {
+   "n_th": {
+    "0.02": 4.9264293210806316e-43,
+    "0.1": 3.4554646250105037e-09,
+    "0.2": 5.878320019368207e-05
+   },
+   "n_th_Al5GHz_100mK": 0.0907522932047051,
+   "advantage_vs_Al_5GHz_at_100mK": 26263412.609651368,
+   "formula": "advantage = n_th_Al5GHz_100mK / n_th(100 mK)"
+  }
+ },
+ "conventions": {
+  "g_convention": "H_int = 2*beta*e*V_zpf*n; g = 2*beta*e*V_zpf*n01/h (Koch 2007)",
+  "reference_convention_note": "The milestone-1 / AT-4 / AT-5 convention is g = e*V_zpf*n01/h with beta implicitly 1 (qubit/cavity.py, unmodified and still bit-faithful to m6_reference.py). It is low by exactly 2x at fixed beta: spectrum.py's charge ladder counts COOPER PAIRS, so the island charge is Q = 2e*n_hat and n01 = 1.3048 is a Cooper-pair matrix element. Every *_reference block below is quoted in that convention; every *_corrected / recommended block is quoted in the pinned one.",
+  "charge_factor_verdict": "2e is correct. spectrum.py's charge ladder is the Cooper-pair number, island charge Q = 2e*n_hat, and n01 = |<0|n|1>| is the Cooper-pair matrix element; the -8 E_C n n_g cross term gives exactly 2 e beta V n. The reference's bare e is low by 2x at fixed beta.",
+  "coupling_operator": "H_int = 2*beta*e*V_zpf*n_hat  (n_hat counts Cooper pairs)",
+  "reference_operator": "H_int = e*V_zpf*n_hat  (qubit/cavity.py, unpinned)",
+  "topology": "Thevenin near-field pickup: EMF V_oc = E_zpf*d_eff in series with the collection-electrode self-capacitance C_c, driving the qubit island (shunt pad C_s || junction C_J). C_Sigma = C_c + C_s + C_J is LOCKED at the E_J/E_C=100 design value, so C_c spends the budget rather than adding to it. beta = V_junction/(E_zpf*d_eff) = C_c/C_Sigma (Koch et al. PRA 76, 042319 (2007) Sec. III divider).",
+  "citation": "Koch et al., 'Charge-insensitive qubit design derived from the Cooper pair box', PRA 76, 042319 (2007), Sec. III: h g = 2 e beta V_rms^0 <0|n|1>, beta = C_g/C_Sigma.",
+  "beta": {
+   "definition": "beta = C_c/C_Sigma = V_junction/(E_zpf*d_eff)",
+   "drive": 0.17272858432791746,
+   "drive_range": [
+    0.08636429216395873,
+    0.6364258249053868
+   ],
+   "readout_sample_d_eff_100um": 0.8636429216395874,
+   "readout_sample_range": [
+    0.4318214608197937,
+    0.9230752250258457
+   ],
+   "beta_max": 0.9230752250258457,
+   "beta_breakeven": 0.5,
+   "C_c_breakeven_fF": 6.499856517851287,
+   "budget_law": "C_Sigma is LOCKED at 12.99971 fF by E_J/E_C = 100, so the collection electrode SPENDS that budget rather than adding to it: C_c <= C_Sigma - C_J and beta_max = 1 - C_J/C_Sigma",
+   "C_c_budget_cap_fF": 11.999713035702571,
+   "AT_impact": "partitioning C_Sigma leaves E_C, f01, anharmonicity and eps1 untouched, so AT-1/AT-2/AT-3 are unaffected"
+  },
+  "correction_factors": {
+   "formula": "g_P2/g_ref = 2*beta",
+   "drive": 0.3454571686558349,
+   "drive_range": [
+    0.17272858432791746,
+    1.2728516498107736
+   ],
+   "readout_sample_d_eff_100um": 1.727285843279175,
+   "readout_sample_range": [
+    0.8636429216395874,
+    1.8461504500516914
+   ],
+   "ceiling": 1.8461504500516914,
+   "scaling": "chi ~ c^2, chi/kappa ~ c^2, T1_Purcell ~ 1/c^2, kappa unchanged",
+   "recommended_readout_point": 1.036371505967505
+  },
+  "shared_island_budget": {
+   "C_c_drive_fF_unconstrained": 2.24542202932608,
+   "C_c_readout_fF_unconstrained": 11.2271101466304,
+   "budget_cap_fF": 11.999713035702571,
+   "oversubscription": 1.122737863469889,
+   "scale_applied": 0.8906798572815918,
+   "kappa_geo_effective": 1.7813597145631836,
+   "C_c_drive_fF": 1.999952172617095,
+   "C_c_readout_fF": 9.999760863085477,
+   "beta_drive": 0.15384587083764092,
+   "beta_readout": 0.7692293541882048,
+   "correction_drive": 0.30769174167528185,
+   "correction_readout": 1.5384587083764096
+  },
+  "chi_convention": {
+   "status": "CORRECTED 2026-07-27 (reference-inherited sign defect)",
+   "ruling": "out/verify/chi_convention_ruling.md",
+   "production_formula": "cavity.chi_dispersive_koch(g, f01, f_r, alpha), Delta = f01 - f_r",
+   "truth_standard": "cavity.chi_two_pole(g, f01, f12, f_r, r), r = (n12/n01)^2 exact",
+   "superseded_formula": "cavity.chi_dispersive(g, f_r - f01, alpha) -- retained, never called in production",
+   "detuning_rule": "Delta = f01 - f_r (qubit MINUS cavity). The single formula chi = g^2 alpha/(Delta(Delta+alpha)) is correct ONLY with that sign: it is the (n12/n01)^2 -> 2 limit of the exact two-pole form chi = g^2/(f01-f_r) - (r/2) g^2/(f12-f_r), and its only poles are then the two physical transmon lines f01 and f12.",
+   "defect": "REFERENCE-INHERITED. m6_reference.py and the AT-4/AT-5 paths feed the negated detuning Delta = f_r - f01, which moves a pole to f01 + |alpha| = 42.229 GHz where the transmon has no transition. Contract rows are NOT edited; they are retained as the documented reference-convention path, mirroring the AT-6 small-frequency precedent.",
+   "ladder": {
+    "n01_recomputed": 1.3047875496582915,
+    "n12_recomputed": 1.8074256222767,
+    "n12_over_n01": 1.3852259877480004,
+    "n_ratio_sq": 1.9188510371324234,
+    "src": "recomputed from qubit/spectrum.py via cavity.charge_matrix_elements",
+    "p6_gates_ladder_ratio": 1.3852259877480004,
+    "reldev_vs_p6": 0.0,
+    "n01_reldev_vs_design_point": 0.0
+   },
+   "selfcheck": {
+    "readout_44p5966GHz": {
+     "g_MHz": 142.1265211330537,
+     "f_cavity_GHz": 44.5966287014581,
+     "chi_two_pole_MHz": -1.6090833261717892,
+     "chi_koch_MHz": -1.463566160302542,
+     "chi_reference_convention_MHz": -3.4816278995319045,
+     "reference_over_koch": 2.378866083383752,
+     "koch_residual_vs_two_pole": -0.09043482304639294,
+     "reference_residual_vs_two_pole": 1.1637337500818763,
+     "ruling_values_MHz": {
+      "two_pole_MHz": -1.6090833,
+      "koch_MHz": -1.4635662,
+      "reference_MHz": -3.4816279
+     },
+     "max_reldev_vs_ruling": 2.7123787080821128e-08
+    },
+    "drive_145GHz": {
+     "g_MHz": 181.77383656589163,
+     "f_cavity_GHz": 145.0,
+     "chi_two_pole_MHz": -0.017515389562549492,
+     "chi_koch_MHz": -0.004871998705439022,
+     "chi_reference_convention_MHz": -0.005026765416625294,
+     "reference_over_koch": 1.0317665747762808,
+     "koch_residual_vs_two_pole": -0.7218446847533395,
+     "reference_residual_vs_two_pole": -0.7130086431321364,
+     "ruling_values_MHz": {
+      "two_pole_MHz": -0.0175154,
+      "koch_MHz": -0.004872,
+      "reference_MHz": -0.0050268
+     },
+     "max_reldev_vs_ruling": 6.879799217321622e-06
+    },
+    "harmonic_limit_identity": {
+     "probe_f_r_GHz": [
+      20.0,
+      33.5,
+      37.5,
+      39.3,
+      44.5966287014581,
+      145.0
+     ],
+     "max_abs_rel_difference": 4.107825191113079e-15,
+     "statement": "chi_two_pole(r = 2) == chi_dispersive_koch identically; that identity is what fixes Delta = f01 - f_r as the single formula's convention"
+    },
+    "pole_locations_GHz": {
+     "koch_and_two_pole": [
+      40.5966287014581,
+      38.96428690470611
+     ],
+     "reference_convention": [
+      40.5966287014581,
+      42.228970498210096
+     ],
+     "statement": "the corrected forms are singular only at the 0-1 and 1-2 lines; the reference convention moves the second pole to f01 + |alpha| = 42.2290 GHz, where the transmon has no transition"
+    },
+    "r_exact": 1.9188510371324234,
+    "r_harmonic": 2.0,
+    "one_minus_r_over_2": 0.04057448143378828,
+    "src": "out/verify/chi_convention_ruling.md"
+   },
+   "impact": "the superseded recommended point (f_r = 44.5966 GHz, chi/kappa = 1.0092) fails: its corrected chi/kappa is 0.424 (Koch) / 0.466 (two-pole). The whole f_r > f01 window is empty analytically. The design moves below f01 into the gap-protection window.",
+   "quoting_rule": "any chi, chi/kappa or Stark shift quoted from a *_reference block is in the inverted-detuning convention and must be labelled as such; every production number in this export is Koch (Delta = f01 - f_r) with the exact two-pole value reported next to it."
+  }
+ },
+ "budgets": {
+  "T1_stack": {
+   "qp_full_kernel": {
+    "status": "SUPERSEDES the AT-6 small-frequency ladder",
+    "marginality_hbar_w_over_Delta": 0.5522834405415534,
+    "T1_us_vs_xqp_T_qp_to_zero": {
+     "1e-08": 551.9965921844334,
+     "1e-07": 55.19965921844335,
+     "1e-06": 5.519965921844335,
+     "1e-05": 0.5519965921844334
+    },
+    "headline_T1_us_at_xqp_1e_6": 5.519965921844335,
+    "T1_us_vs_xqp_vs_T_qp": {
+     "0.020": {
+      "1e-08": 553.7079311364939,
+      "1e-07": 55.370793113649405,
+      "1e-06": 5.5370793113649395,
+      "1e-05": 0.553707931136494
+     },
+     "0.050": {
+      "1e-08": 556.2326369964865,
+      "1e-07": 55.62326369964864,
+      "1e-06": 5.562326369964865,
+      "1e-05": 0.5562326369964864
+     },
+     "0.100": {
+      "1e-08": 560.3363437489768,
+      "1e-07": 56.03363437489768,
+      "1e-06": 5.603363437489769,
+      "1e-05": 0.5603363437489768
+     },
+     "0.200": {
+      "1e-08": 568.1994396634726,
+      "1e-07": 56.81994396634726,
+      "1e-06": 5.681994396634726,
+      "1e-05": 0.5681994396634725
+     }
+    },
+    "kernel_correction_total": 1.1724913601591385,
+    "kernel_correction_decomposition": {
+     "total": 1.1724913601591385,
+     "kernel_shape": 1.129664421949038,
+     "kernel_shape_T0": 1.1296644281691695,
+     "matrix_element": 0.9997793889639456,
+     "harmonic_identity": 1.0381402290658452,
+     "product_check": 1.1724913601591378,
+     "w": 0.5522834405415534,
+     "T_qp_K": 3.527773508951225e-08,
+     "f_GHz": 40.5966287014581
+    },
+    "analytic_T0_limit": 1.1296644281691695,
+    "analytic_T0_form": "sqrt(1 + hbar w / 2 Delta), reproduced by quadrature to 5e-9",
+    "matrix_elements": {
+     "sin_half_01_sq": 0.03534753928134744,
+     "cos_half_00_sq": 0.9639707071863669,
+     "sin_half_01_sq_phasegrid": 0.03534753928134748,
+     "cos_half_00_sq_phasegrid": 0.9639707071863671,
+     "sin_half_01_sq_harmonic": 0.035355339059327376,
+     "N": 35,
+     "n_phi": 8192
+    },
+    "T_qp_dependence": {
+     "T_qp_K": [
+      0.02,
+      0.05,
+      0.1,
+      0.2
+     ],
+     "kernel_shape_ratio": [
+      1.1261729806686676,
+      1.1210613505079272,
+      1.1128510905714486,
+      1.0974507676339653
+     ],
+     "total_ratio": [
+      1.1688675541365727,
+      1.1635621359226784,
+      1.1550406151478863,
+      1.1390564474277893
+     ],
+     "T1_us_at_xqp_1e-6": [
+      5.5370793113649395,
+      5.562326369964865,
+      5.603363437489769,
+      5.681994396634726
+     ]
+    },
+    "small_freq_reference": {
+     "flag": "AT-6 REFERENCE, RETAINED -- valid only for hbar w_q << Delta",
+     "T1_us_vs_xqp": {
+      "1e-08": 647.2112351735356,
+      "1e-07": 64.72112351735356,
+      "1e-06": 6.472112351735357,
+      "1e-05": 0.6472112351735356
+     },
+     "targets_ladder": {
+      "1e-08": 647.2112351735356,
+      "1e-07": 64.72112351735356,
+      "1e-06": 6.4721123517353565,
+      "1e-05": 0.6472112351735356
+     },
+     "marginality_flag": 0.5522834405415534,
+     "shortening_factor_vs_reference": 1.1724913601591385,
+     "recomputed_check_qubit_qp": {
+      "T1_us": {
+       "1e-08": 647.2112351735356,
+       "1e-07": 64.72112351735356,
+       "1e-06": 6.4721123517353565,
+       "1e-05": 0.6472112351735356
+      },
+      "marginality_flag": 0.5522834405415534,
+      "reldev_at_1e_6": 0.0
+     }
+    },
+    "thermal_x_qp_floor": {
+     "formula": "x_qp_th(T) = sqrt(2 pi k_B T/Delta) exp(-Delta/k_B T)",
+     "Delta_over_kB_K": 3.5277735089512245,
+     "x_qp_th": {
+      "0.020": 4.690575897175746e-78,
+      "0.100": 2.0156443402722436e-16,
+      "0.200": 1.3043427932451689e-08
+     },
+     "parametric_band": [
+      1e-08,
+      1e-05
+     ],
+     "verdict": "the 1e-8..1e-5 band is entirely non-equilibrium: the equilibrium floor only reaches the band's bottom edge at ~200 mK, twice the 100 mK operating point"
+    },
+    "claim_discipline": "parametric in (x_qp, T_qp); no absolute TBG T1 is claimed"
+   },
+   "purcell_drive": {
+    "corrected_T1_us": 5290.773559483864,
+    "corrected_g_MHz": 181.77383656589163,
+    "corrected_chi_kHz": -5.026765416625294,
+    "corrected_chi_kHz_flag": "INVERTED-DETUNING CONVENTION -- superseded, retained for continuity with out/m6/p2_coupling.json",
+    "chi_kHz_corrected_convention": {
+     "koch_single_formula": -4.871998705439022,
+     "two_pole_exact_elements": -17.515389562549494,
+     "non_RWA_all_levels_ruling": -10.988,
+     "band_kHz": [
+      -17.5,
+      -11.0
+     ],
+     "reference_convention_value": -5.026765416625294,
+     "note": "at the 104.4 GHz drive detuning the single Koch formula is a factor 3.6 BELOW the exact two-pole value, because the (1 - r/2)/Delta deficit term it omits scales as 1/Delta while the formula scales as 1/Delta^2. Quote the -11.0 to -17.5 kHz band, not the -4.87 kHz single-formula number and not the -5.03 kHz reference-convention one. src: out/verify/chi_convention_ruling.md Sec. 2 and out/m6/p5_two_cavity.json:chi_convention.selfcheck.",
+     "chi_over_kappa_band": [
+      0.0017650318460076166,
+      0.0004909529895466439
+     ],
+     "verdict_unchanged": "chi/kappa stays below 2e-3 in EVERY construction, so 'the drive cavity cannot read the qubit out' survives the convention correction and is strengthened by it"
+    },
+    "corrected_chi_over_kappa": 0.000506548884400716,
+    "correction_factor": 0.3454571686558349,
+    "beta": 0.17272858432791746,
+    "C_c_fF": 2.24542202932608,
+    "d_eff_um": 20.0,
+    "kappa_MHz": 9.923554411875415,
+    "Delta_GHz": 104.4033712985419,
+    "verdict": "harmless: 5291 us of Purcell relaxation through the drive cavity is three orders above the qp-limited T1 at x_qp = 1e-6",
+    "reference": {
+     "flag": "AT-4 REFERENCE, RETAINED (g = e*V_zpf*n01/h)",
+     "T1_Purcell_us": 631.4043840332611,
+     "g_MHz": 526.1834260761443,
+     "chi_kHz": -42.1211480764885,
+     "chi_over_kappa": 0.004244562616201566,
+     "targets_row": {
+      "g_MHz": 526.1834260761442,
+      "chi_kHz": -42.12114807648848,
+      "kappa_MHz": 9.923554411875415,
+      "chi_over_kappa": 0.004244562616201564,
+      "T1_Purcell_us": 631.4043840332613,
+      "g_convention": "g = e*V_zpf*n01/h; lumped-circuit pin = agent task"
+     }
+    },
+    "no_readout_conclusion": {
+     "statement": "the drive cavity cannot read the qubit out -- STRENGTHENED 8.4x by the P2 correction",
+     "chi_over_kappa_reference": 0.004244562616201566,
+     "chi_over_kappa_corrected": 0.000506548884400716,
+     "strengthening_factor": 8.379374127381983,
+     "formula": "chi_over_kappa_reference / chi_over_kappa_corrected"
+    }
+   },
+   "purcell_readout_at_recommended": {
+    "T1_Purcell_us": 36.05848325289382,
+    "margin_over_30us_floor": 1.2019494417631273,
+    "g_MHz": 109.06452140671544,
+    "chi_MHz": -4.031005797949265,
+    "chi_two_pole_MHz": -3.7146080953875296,
+    "chi_over_kappa": 1.0894610264727762,
+    "chi_over_kappa_two_pole": 1.003948133888523,
+    "kappa_MHz": 3.699999999999994,
+    "d_eff_um": 59.99999999999999,
+    "Delta_r_GHz": -3.157752019551019,
+    "f_r_GHz": 37.43887668190708,
+    "naive_reference_T1_Purcell_us": 97.04409477410708,
+    "p2_corrected_at_100um_T1_Purcell_us": 32.5267510786143,
+    "note": "T1_Purcell = Delta^2/(g^2 2 pi kappa) is EVEN in the detuning, so this number is untouched by the chi sign correction as a formula -- but the operating point it is evaluated at moved. The readout cavity now sits BELOW the qubit at f_r = 37.4389 GHz with d_eff = 60.0 um, still below the C_Sigma oversubscription knee at 86.88 um, and the Purcell margin is 1.2019x the 30 us floor.",
+    "reference_convention": {
+     "flag": "SUPERSEDED -- the f_r = 44.5966 GHz point, whose chi/kappa = 1.0092 was an artifact of the inverted detuning; its corrected chi/kappa is 0.424 (Koch) / 0.466 (two-pole) and it FAILS",
+     "T1_Purcell_us": 36.54018716597618,
+     "f_r_GHz": 44.5966287014581,
+     "d_eff_um": 57.49999999999999,
+     "kappa_MHz": 3.449999999999995,
+     "chi_MHz": -3.4816278995319045,
+     "chi_over_kappa": 1.0091675071106985,
+     "eta_readout": 0.11532819289330343,
+     "corrected_values": {
+      "chi_koch_MHz": -1.463566160302542,
+      "chi_two_pole_MHz": -1.6090833261717892,
+      "chi_over_kappa_koch": 0.42422207545001284,
+      "chi_over_kappa_two_pole": 0.46640096410776566,
+      "meets_chi_over_kappa_min": false,
+      "kappa_ceiling_corrected_MHz": 2.479936060492901,
+      "verdict": "FAILS chi/kappa >= 1 under both corrected constructions; the point is withdrawn"
+     },
+     "src": "out/m6/p5_two_cavity.json:reference_convention_scan.recommended_point"
+    }
+   },
+   "thermal_floor": {
+    "n_th_at_f01": {
+     "0.02": 4.9264293210806316e-43,
+     "0.1": 3.4554646250105037e-09,
+     "0.2": 5.878320019368207e-05
+    },
+    "n_th_operating_100mK": 3.4554646250105037e-09,
+    "n_th_Al5GHz_100mK": 0.0907522932047051,
+    "advantage_factor": 26263412.609651368,
+    "mechanism": "f01 = 40.6 GHz is 8.1x an Al transmon's 5 GHz, so hf/kT is 8.1x larger"
+   },
+   "parity_bound": {
+    "eps1_Hz": 37.42631804470875,
+    "parity_splitting_rad_per_s": 235.15649164034426,
+    "Gamma_parity_s_at_xqp_1e6_Tqp_20mK": 414043018.9718582,
+    "motional_narrowing_ratio": 1760712.6900205188,
+    "Tphi_parity_s": 29949.633586359305,
+    "Tphi_frozen_parity_upper_bound_s": 0.008504974649217267,
+    "Tphi_frozen_over_T1qp_at_1e_6": 1536.0037613621816,
+    "bound_formula": "T_phi <= 1/(pi eps1) -- cutoff-independent, holds even with parity frozen and unknown",
+    "verdict": "parity dephasing negligible: even the frozen-parity upper bound 1/(pi eps1) exceeds the qp-limited T1 by >1e3 across the whole x_qp band"
+   }
+  },
+  "T2_maps": {
+   "artifacts": {
+    "json": "out/m6/p4_t2_maps.json",
+    "npz": "out/m6/p4_t2_maps.npz (dense maps incl. per-order breakdown)",
+    "npz_contents": "dense T2*(nu, A) / T2echo(nu, A) maps incl. per-order breakdown and T2_*_exact",
+    "grid_nu_points": 37,
+    "grid_A_points": 25,
+    "grid_nu_range": [
+     -2.85,
+     -1.95
+    ],
+    "grid_A_range": [
+     1e-06,
+     0.01
+    ]
+   },
+   "theory": "Ithier et al., Phys. Rev. B 72, 134519 (2005): first-order Gaussian filter-function integrals (Ramsey log / echo ln2) and the exact quadratic-coupling determinant at second order.",
+   "A_is_free": "filling factor nu (electrons per moire cell), free parameter",
+   "literature_note": "A is the 1/f amplitude of the filling-fraction noise in the convention S_nu(w) = A^2/|w| (two-sided, angular), i.e. <dnu^2> = 2 A^2 ln(w_uv/w_ir); A is a FREE PARAMETER and is swept over 1e-6..1e-2 in units of nu (electrons per moire cell). It has never been measured for a TBG junction. For orientation only, and explicitly NOT as a calibration: 1/f charge noise in conventional superconducting circuits is quoted around 1e-4..1e-3 e (rms per e-fold at 1 Hz) and 1/f flux noise around 1 uPhi0 [Astafiev et al., PRL 93, 267007 (2004); Ithier et al., PRB 72, 134519 (2005)]. Neither maps onto dnu for a gated 2D-material device: here dnu is produced by gate-voltage noise, charge traps in the hBN/substrate dielectric stack, and moire-domain rearrangement, and electrostatic-gate 1/f in 2D-material devices is strongly device- and fabrication-dependent. Every T2 in this deliverable is therefore reported as a function of A; no absolute TBG coherence number is claimed.",
+   "headline_rows": [
+    {
+     "label": "apex, A = 1e-4",
+     "nu": -2.4,
+     "A": 0.0001,
+     "T2_ramsey_us": 29.204235034025665,
+     "T2_echo_us": 42.12177290310544,
+     "quasistatic_us": 188.5249672427382,
+     "ramsey_over_quasistatic": 0.1549091107727037,
+     "echo_over_ramsey": 1.4423172822034074,
+     "dominant_order": "second"
+    },
+    {
+     "label": "apex, A = 1e-3",
+     "nu": -2.4,
+     "A": 0.001,
+     "T2_ramsey_us": 0.2124168849900231,
+     "T2_echo_us": 0.3531868121279642,
+     "quasistatic_us": 1.8852496724273822,
+     "ramsey_over_quasistatic": 0.11267307884823684,
+     "echo_over_ramsey": 1.6627059197509317,
+     "dominant_order": "second"
+    },
+    {
+     "label": "nu = -2.5, A = 1e-4",
+     "nu": -2.5,
+     "A": 0.0001,
+     "T2_ramsey_us": 0.02260466481137808,
+     "T2_echo_us": 0.1109200537268182,
+     "quasistatic_us": 0.09235113983498179,
+     "ramsey_over_quasistatic": 0.2447686606983884,
+     "echo_over_ramsey": 4.906954146516982,
+     "dominant_order": "first"
+    },
+    {
+     "label": "nu = -2.5, A = 1e-3",
+     "nu": -2.5,
+     "A": 0.001,
+     "T2_ramsey_us": 0.0021131282214014286,
+     "T2_echo_us": 0.011071048235978494,
+     "quasistatic_us": 0.00923511398349818,
+     "ramsey_over_quasistatic": 0.22881452521076454,
+     "echo_over_ramsey": 5.239174851697435,
+     "dominant_order": "first"
+    }
+   ],
+   "contrast_at_A_1e_4": {
+    "quasistatic": 2041.3929657999372,
+    "ramsey": 1291.9561195760657,
+    "echo": 379.74894068160063,
+    "formula": "apex T2 / off-apex(nu = -2.5) T2, from budgets.T2_maps.headline_rows",
+    "statement": "the apex/off-apex contrast is 2041x quasistatically, 1292x under Ramsey and only 380x under echo, at A = 1e-4. The double-sweet-spot design law stands; the '~2000x' figure must be quoted as Ramsey-specific AND A-specific.",
+    "mechanism": "echo removes the infrared log off-apex (4.9x gain) but buys only 1.44x at the apex, where the second-order channel is asymptotically sequence-independent (Szego limit: chi_echo/chi_ramsey -> 1.000)",
+    "quoting_rule": "always state the sequence (Ramsey vs echo), A, and the IR cutoff"
+   },
+   "ir_cutoff_convention": {
+    "noise_convention": "S_nu(w) = A^2/|w| two-sided angular; <dnu^2> = 2 A^2 ln(w_uv/w_ir); one-sided ordinary-frequency equivalent 2 A^2 / f",
+    "f_ir_Hz": 1.0,
+    "w_ir_rad_per_s": 6.283185307179586,
+    "w_ir_convention": "w_ir = 2 pi / T_total_acquisition; default 1 Hz",
+    "w_uv_convention": "Nyquist of the exact-determinant time grid, w_uv = pi M / t (second order only; <0.1% effect)",
+    "T2_definition": "chi(T2) = 1, same definition for Ramsey and echo",
+    "sensitivity": "apex T2 is the most IR-cutoff-sensitive number in the export: 3.75x over six decades of f_ir. The acquisition time MUST be stated wherever an apex T2 is quoted."
+   },
+   "quasistatic_reference": {
+    "flag": "AT-3 REFERENCE, RETAINED (qubit/dome.py, unchanged)",
+    "Tphi_apex_us": {
+     "1e-04": 188.5249672427382,
+     "1e-03": 1.8852496724273822
+    },
+    "Tphi_off_us": {
+     "1e-04": 0.09235113983498179,
+     "1e-03": 0.00923511398349818
+    },
+    "D1_apex_GHz": 0.0,
+    "D2_apex_GHz": -168.84229756897184,
+    "D1_off_nu_m2p5_GHz": 17.233673929339943
+   },
+   "additivity_rule": {
+    "prescription": "chi = chi_1 + chi_2 (independent rates) is the reported map",
+    "exactness": "exact at the apex (D1 = 0) and far off-apex; conservative in between",
+    "max_abs_error_all": 1.7320217719247344,
+    "largest_A_with_max_error_below_1pct": 0.00031622776601683794,
+    "worst_point": {
+     "nu": -2.425,
+     "A": 0.006812920690579608,
+     "T2_additive_us": 0.0009723070424312428,
+     "T2_exact_us": 0.0026563640089179016
+    },
+    "quoting_rule": "quote the additive map for A <= 1e-3 only; exact maps live in the npz"
+   },
+   "claim_discipline": "Design study. A is free; every T2 is parametric in A. No absolute TBG coherence claim is made."
+  }
+ },
+ "readout_window": {
+  "naive_22pt_reference": {
+   "flag": "AT-5 REFERENCE, RETAINED -- naive (beta = 1, no kappa floor); NOT a design window",
+   "n_points": 22,
+   "criteria": {
+    "chi_over_kappa_min": 1.0,
+    "T1_Purcell_min_us": 30.0,
+    "g_over_Delta_sq_max": 0.01
+   },
+   "sample_point_brief": {
+    "Delta_r_GHz": 7.0,
+    "f_r_GHz": 47.5966287014581,
+    "d_eff_um": 100.0,
+    "kappa_MHz": 1.0,
+    "g_MHz": 283.4807343942439,
+    "chi_MHz": -3.491204638874969,
+    "chi_over_kappa": 3.4912046388749687,
+    "T1_Purcell_us": 97.04409477410708
+   },
+   "rows_pointer": "out/m6/p5_two_cavity.json:reference_convention_scan.naive_rows_for_reference",
+   "chi_convention_flag": "every chi in this reference block uses the inverted detuning Delta = f_r - f01 (qubit/cavity.py:chi_dispersive). It is a reproduction reference, not a physics claim -- see conventions.chi_convention."
+  },
+  "reference_convention_scan": {
+   "flag": "REFERENCE CONVENTION, RETAINED, NOT A DESIGN WINDOW -- every chi below was produced with the inverted detuning Delta = f_r - f01 (cavity.chi_dispersive). Reproduced bit-for-bit from the superseded artifact so nothing is deleted; superseded for every design purpose by the corrected blocks. Mirrors the AT-6 small-frequency precedent (paper/decisions.md 2026-07-27 M6 P3).",
+   "counts": {
+    "naive_feasible": 22,
+    "feasible_same_grid": 12,
+    "feasible_extended_grid": 14,
+    "feasible_and_achievable": 0
+   },
+   "recommended_point": {
+    "Delta_r_GHz": 4.0,
+    "f_r_GHz": 44.5966287014581,
+    "d_eff_um": 57.49999999999999,
+    "kappa_MHz": 3.449999999999995,
+    "g_MHz": 142.1265211330537,
+    "chi_MHz": -3.4816278995319045,
+    "chi_over_kappa": 1.0091675071106985,
+    "T1_Purcell_us": 36.54018716597618,
+    "eta_readout": 0.11532819289330343,
+    "kappa_intrinsic_MHz": 3.0521177345180988,
+    "kappa_ceiling_MHz": 3.8249475206185126,
+    "C_c_sum_fF": 8.70101036363856,
+    "a_r_um": 1907.7069831787167,
+    "beta_readout": 0.4965946799427628,
+    "margin_T1": 1.2180062388658726
+   },
+   "corrected_values_at_this_point": {
+    "chi_koch_MHz": -1.463566160302542,
+    "chi_two_pole_MHz": -1.6090833261717892,
+    "chi_over_kappa_koch": 0.42422207545001284,
+    "chi_over_kappa_two_pole": 0.46640096410776566,
+    "meets_chi_over_kappa_min": false,
+    "kappa_ceiling_corrected_MHz": 2.479936060492901,
+    "verdict": "FAILS chi/kappa >= 1 under both corrected constructions; the point is withdrawn"
+   },
+   "rows_pointer": "out/m6/p5_two_cavity.json:reference_convention_scan.rows",
+   "why_retained": "the defect is reference-inherited (m6_reference.py carries it), so per out/verify/chi_convention_ruling.md Sec. 3(e) the contract rows and the AT-4/AT-5 tests are left untouched and the superseded design window is kept quotable next to the corrected one."
+  },
+  "corrected_scan": {
+   "pointer": "out/m6/p5_two_cavity.json:readout_scan_beta",
+   "n_grid_points": 78,
+   "counts": {
+    "naive_feasible": 22,
+    "corrected_feasible_same_grid": 11,
+    "corrected_feasible_extended_grid": 11,
+    "corrected_feasible_and_achievable": 0,
+    "reference_convention_feasible_same_grid": 12,
+    "reference_convention_feasible_extended_grid": 14,
+    "verdict": "under the REFERENCE convention the naive 22-point window became 12 on the same grid (14 with the 50 um column) and 0 once the measured kappa floor was enforced. Under the CORRECTED chi the same mandated grid gives 11 / 11 / 0: the f_r > f01 window is empty at every stage, and `above_f01_emptiness_proof` shows it is empty for every detuning and every d_eff, not merely on this grid."
+   },
+   "criteria": {
+    "chi_over_kappa_min": 1.0,
+    "T1_Purcell_min_us": 30.0,
+    "g_over_Delta_sq_max": 0.01,
+    "g12_over_Delta12_sq_max": 0.01,
+    "kappa_achievable": "kappa_r >= f_r/Q_i (P5 addition)"
+   },
+   "chi_mode": "koch",
+   "collapse": "22 naive -> 12 on the same grid (14 with a 50 um column) under the REFERENCE convention -> 0 once the measured internal-Q linewidth floor C2 is enforced. Under the CORRECTED chi the mandated f_r > f01 grid gives 11 / 11 / 0, and the window is empty not just on this grid but ANALYTICALLY, for every detuning and every d_eff (readout_window.above_f01_empty)."
+  },
+  "above_f01_empty": {
+   "verdict": "EMPTY -- no f_r > f01 satisfies chi/kappa >= 1, T1_Purcell >= 30 us and kappa >= f_r/Q_i simultaneously",
+   "sup_kappa_ceiling_MHz": 2.9427609811682283,
+   "kappa_int_at_mandated_Dmin_MHz": 3.0521177345180988,
+   "statement": "the Koch ceiling never reaches the measured internal-Q linewidth anywhere in the mandated window; no grid is needed",
+   "sweep": {
+    "step_GHz": 0.01,
+    "Delta_r_range_GHz": [
+     0.01,
+     500.0
+    ],
+    "koch_mandated_window": {
+     "max_ceiling_minus_kappa_int_MHz": -0.5647442338719619,
+     "at_Delta_r_GHz": 4.75,
+     "at_f_r_GHz": 45.3466287014581,
+     "ceiling_MHz": 2.5387022303627336,
+     "kappa_int_MHz": 3.1034464642346955,
+     "empty": true
+    },
+    "koch_all_D": {
+     "max_ceiling_minus_kappa_int_MHz": -0.5647442338719619,
+     "at_Delta_r_GHz": 4.75,
+     "at_f_r_GHz": 45.3466287014581,
+     "ceiling_MHz": 2.5387022303627336,
+     "kappa_int_MHz": 3.1034464642346955,
+     "empty": true
+    },
+    "two_pole_mandated_window": {
+     "max_ceiling_minus_kappa_int_MHz": -0.3861385353860083,
+     "at_Delta_r_GHz": 7.08,
+     "at_f_r_GHz": 47.6766287014581,
+     "ceiling_MHz": 2.8767691825015818,
+     "kappa_int_MHz": 3.26290771788759,
+     "empty": true
+    },
+    "two_pole_first_crossing_Delta_r_GHz": null,
+    "two_pole_note": "the exact-element ceiling grows like sqrt(D) and DOES cross kappa_int, but only far outside the mandated window and far outside the gap-protection window; inside the mandated window it stays below"
+   },
+   "ceiling_table_MHz": {
+    "4.0": {
+     "koch": 2.479936060492901,
+     "two_pole": 2.6003006901042016,
+     "kappa_int": 3.0521177345180988
+    },
+    "8.0": {
+     "koch": 2.6818472621553604,
+     "two_pole": 2.9364119564720252,
+     "kappa_int": 3.3258709596732823
+    },
+    "12.0": {
+     "koch": 2.7609616787032514,
+     "two_pole": 3.145896614501424,
+     "kappa_int": 3.5996241848284662
+    },
+    "16.0": {
+     "koch": 2.803238068725547,
+     "two_pole": 3.3141171549528963,
+     "kappa_int": 3.87337740998365
+    }
+   },
+   "src": "out/verify/chi_convention_ruling.md Sec. 3(c), 3(d)"
+  },
+  "gap_protection_window": {
+   "f_r_GHz": [
+    33.08887668190795,
+    42.81099026699218
+   ],
+   "derivation": "f01 lies inside the Maxwell-scaled readout lattice's TE gap iff gap_lo f_r/f_cav <= f01 <= gap_hi f_r/f_cav, i.e. f01 f_cav/gap_hi <= f_r <= f01 f_cav/gap_lo",
+   "meaning": "inside this window the readout mirror region is a photonic bandgap AT the qubit frequency, which is what the missing-T1-channel radiation finding asks for. The superseded recommended point at 44.5966 GHz lies outside it; the corrected one lies inside.",
+   "eta_ceiling_max": 0.3115371704537091,
+   "eta_ceiling_max_at_f_r_GHz": 37.4888766819077,
+   "feasible_f_r_bands_GHz": [
+    [
+     33.08887668190795,
+     38.13887668190766
+    ],
+    [
+     39.38887668190759,
+     39.73887668190757
+    ]
+   ],
+   "band_split_cause": "the two feasible bands are separated by the 1-2 line at f12 = 38.9643 GHz: constraint C7, (g12/Delta_12)^2 <= 0.01, empties the neighbourhood of f12 entirely",
+   "envelope_pointer": "out/m6/p5_two_cavity.json:gap_window_scan.envelope"
+  },
+  "recommended_point": {
+   "Delta_r_GHz": -3.157752019551019,
+   "f_r_GHz": 37.43887668190708,
+   "Delta_koch_GHz": 3.157752019551019,
+   "Delta_12_GHz": -1.5254102227990245,
+   "d_eff_um": 59.99999999999999,
+   "kappa_MHz": 3.699999999999994,
+   "beta_readout": 0.5181857529837525,
+   "beta_drive": 0.17272858432791746,
+   "correction_factor": 1.036371505967505,
+   "g_MHz": 109.06452140671544,
+   "g12_MHz": 151.07900939388034,
+   "n12_over_n01": 1.3852259877480004,
+   "chi_MHz": -4.031005797949265,
+   "chi_two_pole_MHz": -3.7146080953875296,
+   "chi_over_kappa": 1.0894610264727762,
+   "chi_over_kappa_two_pole": 1.003948133888523,
+   "T1_Purcell_us": 36.05848325289382,
+   "g_over_Delta_sq": 0.0011929189917006288,
+   "g12_over_Delta12_sq": 0.009809230774476936,
+   "kappa_intrinsic_MHz": 2.562253309464818,
+   "kappa_ext_MHz": 1.137746690535176,
+   "kappa_ceiling_MHz": 4.233998243242368,
+   "kappa_max_all_constraints_MHz": 3.7103069469265115,
+   "eta_readout": 0.3074991055500481,
+   "C_c_readout_fF": 6.7362660879782394,
+   "C_c_drive_fF": 2.24542202932608,
+   "C_c_sum_fF": 8.98168811730432,
+   "C_c_cap_fF": 11.999713035702571,
+   "oversubscription": 0.7484919089799259,
+   "a_r_um": 2272.4319621778322,
+   "Q_w_required": 32906.161796257555,
+   "below_1_2_line": true,
+   "inside_gap_protection_window": true,
+   "margins": {
+    "chi_over_kappa": 1.0894610264727762,
+    "chi_over_kappa_two_pole": 1.003948133888523,
+    "T1_Purcell": 1.2019494417631273,
+    "dispersive": 8.38279889042924,
+    "dispersive_12": 1.0194479291912915,
+    "target_T1": 1.2,
+    "R_max_symmetric": 1.6524510779641575,
+    "identity": "m_chi * m_T1 = (kappa_ceiling/kappa)^2  (g cancels)"
+   },
+   "eta": 0.3074991055500481,
+   "eta_note": "readout port efficiency: 30.7% of the readout photons leave the port, against 11.5% at the superseded (inverted-detuning) point. The efficiency ceiling anywhere in the gap-protection window is 0.3115, at f_r = 37.489 GHz.",
+   "objective": "maximise the readout port efficiency eta = 1 - kappa_int/kappa subject to |chi_Koch|/kappa >= 1, |chi_two_pole|/kappa >= 1 (C8), (g/Delta)^2 <= 0.01 with Delta = f01 - f_r, (g12/Delta_12)^2 <= 0.01 (C7), kappa_r >= kappa_int(f_r) and a Purcell margin T1/30us >= 1.2; unchanged from the superseded run except for the corrected chi and the two added constraints",
+   "corridor": {
+    "d_lo_um": 59.94092369559571,
+    "d_hi_um": 60.28961525700543,
+    "g_lo_MHz": 108.84985617679389,
+    "g_hi_MHz": 110.11995416566832,
+    "g_lo_koch_MHz": 104.49070240035664,
+    "g_lo_two_pole_MHz": 108.84985617679389,
+    "g_hi_T1_MHz": 119.57120281034372,
+    "g_hi_dispersive_01_MHz": 315.7752019551019,
+    "g_hi_dispersive_12_MHz": 110.11995416566832,
+    "binding_upper_bound": "dispersive_12",
+    "binding_lower_bound": "two_pole",
+    "two_pole_screen": true,
+    "oversubscription_knee_um": 86.88158287379102
+   },
+   "deviation_vs_exploration_precomputation": {
+    "exploration_point": {
+     "Delta_r_GHz": -1.337752019550285,
+     "f_r_GHz": 39.258876681907815,
+     "d_eff_um": 29.5,
+     "kappa_MHz": 3.360000000000001,
+     "g_MHz": 28.990462748909092,
+     "eta_readout": 0.2003538610385489,
+     "T1_rad_total_us_free_space": 4.774756591282446,
+     "T1_rad_total_us_homog_slab": 1.6681140035347384
+    },
+    "src": "out/m6/explore/missing_t1_channels.json:verdict.question_c_retune.best_trade_at_eta_0p2.koch_convention",
+    "reproduced_here": {
+     "chi_koch_MHz": 3.48119306062492,
+     "chi_two_pole_MHz": 3.3654365034987603,
+     "chi_over_kappa_koch": 1.0360693632812257,
+     "eta_readout": 0.2003538610385489,
+     "eta_reldev": 0.0,
+     "g12_over_Delta12_sq": 0.018583016504363822
+    },
+    "verdict": "the exploration point is reproduced to 1e-15 on every quantity it reports, and is then REJECTED by the new constraint C7: its (g12/Delta_12)^2 = 0.01858 is 1.86x the cap. The rejection is not marginal -- with C7 enforced the largest kappa admitting any g at f_r = 39.2589 GHz is 1.8110 MHz, below kappa_int = 2.6868 MHz, so that f_r supports no operating point at all. This export therefore SUPERSEDES both the exploration's eta ~ 0.20 trade point and the ruling's description of it as 'marginal'.",
+    "deviation_of_this_recommendation": {
+     "d_f_r_GHz": -1.8200000000007321,
+     "d_d_eff_um": 30.499999999999993,
+     "d_kappa_MHz": 0.33999999999999275,
+     "d_eta": 0.1071452445114992,
+     "eta_ratio": 1.5347800334673063
+    }
+   },
+   "search": {
+    "n_ok": 77332,
+    "n_points": 74897223,
+    "grid": {
+     "f_r_GHz_step": 0.00999999999999801,
+     "d_eff_um_step": 0.5,
+     "kappa_MHz_step": 0.04999999999999982,
+     "f_r_GHz_range": [
+      33.08887668190795,
+      42.808876681906014
+     ],
+     "d_eff_um_range": [
+      5.0,
+      200.0
+     ],
+     "kappa_MHz_range": [
+      2.0,
+      11.999999999999964
+     ],
+     "n_axis0": 953,
+     "block": 10
+    },
+    "constraints_applied": {
+     "chi_over_kappa_min": 1.0,
+     "T1_margin": 1.2,
+     "g_over_Delta_sq_max": 0.01,
+     "g12_over_Delta12_sq_max": 0.01,
+     "two_pole_screen": true,
+     "kappa_floor": "kappa >= f_r/Q_i"
+    }
+   }
+  },
+  "koch_only_optimum": {
+   "flag": "TWO_POLE_SCREEN DISABLED -- reaches a higher eta but its exact two-pole chi/kappa is below 1, so it is NOT recommended. Exported for completeness and so the cost of the C8 screen is explicit.",
+   "f_r_GHz": 37.53887668190706,
+   "d_eff_um": 58.0,
+   "kappa_MHz": 3.8999999999999932,
+   "eta_readout": 0.3412571435657177,
+   "chi_over_kappa": 1.0081198903405317,
+   "chi_over_kappa_two_pole": 0.9314973895782156,
+   "eta_cost_of_two_pole_screen": 0.03375803801566957
+  },
+  "constraints": [
+   {
+    "id": "C1",
+    "name": "shared C_Sigma budget (P2)",
+    "statement": "C_c,drive + C_c,readout <= C_Sigma - C_J",
+    "meaning": "at kappa_geo = 2.0 and eps_eff = 6.34, any d_eff_readout above 86.9 um oversubscribes the island and forces the common-process rescale. The brief's 100 um sample point sits above the knee (oversubscription 1.1227); the recommended 60.0 um sits BELOW it, so the oversubscription finding is resolved, not merely rescaled.",
+    "numbers": {
+     "cap_fF": 11.999713035702571,
+     "C_Sigma_fF": 12.999713035702573,
+     "C_J_fF": 1.0,
+     "d_eff_readout_knee_um": 86.88158287379102
+    }
+   },
+   {
+    "id": "C2",
+    "name": "measured internal-Q linewidth floor (P5, new)",
+    "statement": "kappa_r >= f_r / Q_i, Q_i scale-invariant from photonics.json",
+    "meaning": "the brief's kappa_r grid {1, 3} MHz lies at or below this floor (2.562 MHz at f_r = 37.439 GHz), so every kappa = 1 MHz row of the naive feasible set is physically unreachable with the measured cavity.",
+    "numbers": {
+     "Q_i_measured": 14611.7,
+     "Q_i_optimistic_ceiling": 18419.32981694074,
+     "kappa_int_MHz_at_recommended": 2.562253309464818,
+     "kappa_int_MHz_optimistic": 2.032586258783073
+    }
+   },
+   {
+    "id": "C3",
+    "name": "analytic Purcell/dispersive kappa ceiling (P5; CORRECTED 2026-07-27)",
+    "statement": "kappa_r^2 <= |alpha| |Delta| / (|Delta + alpha| 2 pi T1_min), Delta = f01 - f_r",
+    "meaning": "chi/kappa >= 1 and T1_Purcell >= 30 us cannot both hold above this kappa, for ANY g and hence any d_eff. Under the corrected chi it INCREASES with detuning above f01 and saturates at 2.9428 MHz, which is below kappa_int everywhere in the mandated 4-16 GHz window -- so that window is EMPTY (see above_f01_emptiness_proof). Below f01 the ceiling is much wider because |Delta + alpha| = |f_r - f12| can be small, and that is where the design now sits.",
+    "numbers": {
+     "T1_min_us": 30.0,
+     "alpha_GHz": -1.6323417967519944,
+     "kappa_ceiling_MHz_vs_Delta": {
+      "4.0": 2.479936060492901,
+      "8.0": 2.6818472621553604,
+      "12.0": 2.7609616787032514,
+      "16.0": 2.803238068725547
+     },
+     "kappa_ceiling_at_recommended_MHz": 4.233998243242368,
+     "kappa_ceiling_two_pole_at_recommended_MHz": 4.064437620199547,
+     "supremum_above_f01_MHz": 2.9427609811682283,
+     "superseded_statement": "kappa_r^2 <= |alpha| Delta_r / ((Delta_r + alpha) 2 pi T1_min) with Delta_r = f_r - f01 -- the inverted-detuning form; it gave 3.8249 MHz at Delta_r = 4 GHz against the corrected 2.4799 MHz, and it decreased in Delta_r where the corrected ceiling increases"
+    }
+   },
+   {
+    "id": "C4",
+    "name": "readout port efficiency squeeze (C2 + C3 + C7)",
+    "statement": "eta = kappa_ext/kappa <= 1 - kappa_int/kappa_max",
+    "meaning": "the achievable kappa window is bracketed from below by C2 and from above by C3 together with the two dispersivity caps. Above f01 the bracket is EMPTY (eta_max = 0). Inside the gap-protection window below f01 it reopens, and the efficiency ceiling there is 0.3115 at f_r = 37.489 GHz -- roughly three times the superseded 11.5 % corner, which was an artifact of the chi sign error rather than a physical squeeze. A genuine Purcell filter still relieves C3, and higher Q_i still relieves C2.",
+    "numbers": {
+     "eta_max_measured_Qi": 0.3948383626388421,
+     "eta_max_optimistic_Qi": 0.5199369149415302,
+     "eta_at_recommended": 0.3074991055500481,
+     "eta_ceiling_gap_window": 0.3115371704537091,
+     "eta_ceiling_gap_window_at_f_r_GHz": 37.4888766819077,
+     "eta_max_above_f01": 0.0,
+     "superseded_value": {
+      "flag": "REFERENCE CONVENTION -- the 'eta <= 20.2 % anywhere, 11.5 % at the recommended point' reading came from the inverted-detuning chi",
+      "eta_max_measured_Qi": 0.202,
+      "eta_at_superseded_recommended_point": 0.11532819289330343
+     }
+    }
+   },
+   {
+    "id": "C5",
+    "name": "drive-tone pair-breaking window (P3)",
+    "statement": "2 Delta(nu) > h * 145 GHz only for |nu + 2.4| < 0.058571",
+    "meaning": "with the drive plane pinned at 145 GHz the qubit may only be gated over a 0.29 GHz span of f01. Combined with C1-C4, the readout plane is the only tunable degree of freedom left; the 23.7-40.6 GHz tunability claim requires moving the drive plane, not the readout plane.",
+    "numbers": {
+     "window_halfwidth_nu": 0.05857106400995393,
+     "f01_span_inside_window_GHz": 0.2906162406990802,
+     "margin_2Delta_over_hf": 1.0138879028880208
+    }
+   },
+   {
+    "id": "C6",
+    "name": "lattice mutual transparency (P5 geometry)",
+    "statement": "f_r sits far below the drive lattice's TE gap and 145 GHz sits far above the readout lattice's fundamental gap",
+    "meaning": "each cavity must carry its own complete mirror region; the only topology that keeps both field maxima on one island is the nested concept C, and that costs readout mirror rows.",
+    "numbers": {}
+   },
+   {
+    "id": "C7",
+    "name": "1-2-line dispersivity (P5, new; chi-convention ruling)",
+    "statement": "(g12/Delta_12)^2 <= 0.01 with g12 = g n12/n01 and Delta_12 = f_r - f12",
+    "meaning": "the corrected optimum sits between / near the two transmon lines, where the 0-1 dispersivity test is NOT the binding one: the exact 1-2 coupling is g12 = 1.38523 g and the 1-2 detuning is small. Imposing the same 0.01 the design already imposes on the 0-1 line makes the band f_r ~ 38.15-39.44 GHz INFEASIBLE (not merely marginal): at f_r = 39.2589 GHz -- the ruling's own candidate -- the largest admissible kappa falls to 1.881 MHz, below kappa_int = 2.687 MHz. The optimum therefore moves BELOW the 1-2 line.",
+    "numbers": {
+     "n12_over_n01": 1.3852259877480004,
+     "n_ratio_sq": 1.9188510371324234,
+     "f12_GHz": 38.96428690470611,
+     "cap": 0.01,
+     "value_at_recommended": 0.009809230774476936,
+     "margin_at_recommended": 1.0194479291912915,
+     "value_at_ruling_candidate_f_r_39p2589": 0.018583016504363822
+    }
+   },
+   {
+    "id": "C8",
+    "name": "two-pole robustness screen (P5, new; truth standard)",
+    "statement": "|chi_two_pole|/kappa >= 1 as well as |chi_Koch|/kappa >= 1",
+    "meaning": "the corrected single formula is exact only in the harmonic limit (n12/n01)^2 -> 2; at E_J/E_C = 100 it overstates |chi| by about 8 % at the recommended detuning. The ruling designates the exact two-pole form the truth standard, so the recommended point is required to clear chi/kappa >= 1 under BOTH constructions. Dropping this screen (module flag TWO_POLE_SCREEN) moves the optimum to the koch_only_optimum block, which reaches eta = 0.3413 but has a two-pole chi/kappa of only 0.9315.",
+    "numbers": {
+     "enabled": true,
+     "chi_over_kappa_koch_at_recommended": 1.0894610264727762,
+     "chi_over_kappa_two_pole_at_recommended": 1.003948133888523,
+     "two_pole_over_koch_at_recommended": 0.921508993432185
+    }
+   }
+  ],
+  "envelope_statement": "The two-cavity chip is feasible, but not where the superseded artifact put it. Once the P2 divider and the shared C_Sigma budget are enforced, the naive 22-point readout window collapses; once the measured internal-Q floor C2 is added, every kappa = 1 MHz point disappears. With the CORRECTED dispersive shift (Delta = f01 - f_r) the analytic ceiling C3 inverts its monotonicity and saturates at 2.9428 MHz above f01, below kappa_int everywhere in the mandated 4-16 GHz window: THE ENTIRE f_r > f01 READOUT WINDOW IS EMPTY, analytically, for any g and any d_eff. What survives is a corner BELOW the qubit, inside the gap-protection window [33.089, 42.811] GHz over which the Maxwell-scaled readout lattice's own TE gap covers f01: f_r ~ 37.439 GHz (Delta_r = -3.158 GHz, i.e. 1.525 GHz below the 1-2 line), d_eff_r ~ 60.0 um, kappa_r ~ 3.70 MHz, at a readout port efficiency of 30.7% -- about three times the 11.5% quoted before the correction, which was an artifact of the sign error, not a physical squeeze. That electrode still sits below the C_Sigma oversubscription knee at 86.9 um. Two new constraints bind here and did not before: C7, the 1-2-line dispersivity cap, which empties the band just below f01 that the ruling had flagged only as marginal; and C8, the requirement that the exact two-pole chi clears chi/kappa >= 1 too. The remaining hard external constraint is unchanged: C5, the 145 GHz drive plane pins the qubit to a 0.29 GHz window of f01, so gate-based frequency allocation and a fixed 145 GHz drive cavity are mutually exclusive regardless of anything the readout plane does.",
+  "escape_hatches": [
+   "genuine Purcell filter at f_r: lifts C3, frees kappa_r and eta",
+   "higher Q_i (larger cell / better vertical confinement): lowers C2, optimistic ceiling Q_i = 18419 gives kappa_int = 2.033 MHz",
+   "drive plane moved below 147 GHz: lifts C5 entirely",
+   "relaxing C7 from 0.01 to the 0.0186 the ruling's candidate needs would reopen f_r ~ 39.26 GHz, but at a 1-2-line dispersivity 1.9x worse than the design allows on the 0-1 line -- an owner decision, not a default"
+  ]
+ },
+ "two_cavity": {
+  "geometry": {
+   "a_r_um": 2272.4319621778322,
+   "a_r_mm": 2.272431962177832,
+   "a_um_drive": 586.74,
+   "scale_factor_a_r_over_a": 3.8729794494628496,
+   "maxwell_relation": "a_r = a * f_cav / f_r   (nu = a/lambda invariant at fixed r/a, t/a, eps_core)",
+   "a_r_at_brief_sample_47p6GHz_um": 1787.464833562754,
+   "r_um": 681.7295886533497,
+   "t_um": 1136.2159810889161,
+   "V_mode_readout_um3": 3880671330.3806057,
+   "gaps": {
+    "drive_lattice_gap_GHz": [
+     137.5,
+     177.9
+    ],
+    "readout_lattice_gap_GHz": [
+     35.50238306042913,
+     45.93362870145704
+    ],
+    "f_r_in_readout_lattice": {
+     "f_GHz": 37.43887668190708,
+     "in_gap": true,
+     "above_lower_edge_GHz": 1.9364936214779505,
+     "below_upper_edge_GHz": 8.494752019549956,
+     "note": "true by construction: Maxwell scaling maps the measured 145 GHz / [137.5, 177.9] GHz placement onto a_r rigidly, so the readout line keeps the same +7.5 / -32.9 GHz margins scaled by f_r/f_cav. photonics.json:tolerances (|dr/a|<=2%, |dt/a|<=5%, |da|<=2%) also scales rigidly."
+    },
+    "f_r_in_drive_lattice": {
+     "f_GHz": 37.43887668190708,
+     "in_gap": false,
+     "below_lower_edge_GHz": 100.06112331809291,
+     "ratio_lower_edge_over_f": 3.672652926214771,
+     "nu_a_over_lambda": 0.0732736462114139,
+     "nu0_gap_centre": 0.283785063521672,
+     "verdict": "FAR BELOW the drive lattice's TE gap: at a/lambda = 0.0733 the hole lattice is deeply subwavelength (lambda/a = 13.6), so the drive lattice is not a mirror at f_r -- it homogenises into an index-guiding slab of volume-average eps ~ 8.19 (air fill fraction 0.3265). The readout mode PROPAGATES there and is guided away laterally.",
+     "homogenised_eps_volume_average": 8.193152102196139,
+     "air_fill_fraction": 0.32648388556215924,
+     "homogenisation_caveat": "volume average only; Maxwell-Garnett / full-wave effective index would differ by a few percent. No new FDTD run."
+    },
+    "f_cav_in_readout_lattice": {
+     "f_GHz": 145.0,
+     "in_fundamental_gap": false,
+     "above_upper_edge_GHz": 99.06637129854296,
+     "ratio_f_over_upper_edge": 3.15672861254701,
+     "nu_a_over_lambda": 1.0991024814766543,
+     "verdict": "at a_r/lambda = 1.0991, i.e. 3.873x the fundamental cavity-line nu, the 145 GHz drive tone is far above the readout lattice's first TE gap and lies in its higher-order band manifold.",
+     "PARAMETRIC_CAVEAT": "whether 145 GHz lands inside a higher-order gap of the readout lattice is NOT computed here -- it needs an MPB/FDTD band run at a_r, which is out of P5 scope. The default design assumption is the pessimistic one: higher-order bands are dense, so the readout lattice does NOT confine 145 GHz. This is a parametric caveat, not a computed result."
+    },
+    "symmetry_verdict": "NEITHER lattice confines the other's frequency. Each cavity needs its own mirror region, and each region is transparent (or leaky) at the other's frequency."
+   },
+   "concept": {
+    "id": "C",
+    "name": "nested / concentric heterostructure",
+    "verdict": "VIABLE, CONDITIONAL",
+    "short": "nested, CONDITIONAL",
+    "description": "The complete drive-lattice patch (its L3 defect plus its mirror rows) is embedded at the CENTRE of the readout lattice's L3 defect region. Both field maxima then coincide at one point, where the island and both short collection electrodes sit. At f_r the drive patch is a homogenised eps ~ 8.19 dielectric plug inside the readout defect -- a perturbation of the readout mode, not a mirror.",
+    "reason": "with the measured 8 outer mirror rows the drive patch spans 9.89 mm against a 6.82 mm readout L3 defect, so it overruns by 0.78 readout mirror rows per side. Either the drive cavity is cut back to ~5.0 mirror rows (Q_i then unverified -- the measured 14611 assumes 8 rows in a 24a cell), or the readout defect is enlarged beyond L3. Both need an FDTD run at a_r; DESIGN ESTIMATE, not a computed Q.",
+    "drive_patch_span_um": 9890.327926663704,
+    "readout_defect_span_um": 6817.295886533497,
+    "fits_inside_readout_defect": false,
+    "readout_mirror_rows_consumed_per_side": 0.7807564341319875,
+    "drive_mirror_rows_that_fit": 4.9761463755709165,
+    "rejected": [
+     {
+      "id": "A",
+      "name": "side-by-side (butted lattice regions)",
+      "verdict": "REJECTED",
+      "reason": "the minimum centre-to-centre distance is 19.81 mm, so at least one collection electrode becomes a >1 mm routed trace. P2's divider assumes an electrically small lumped pickup (C_c = kappa_geo eps0 eps_eff d_eff); a mm-scale trace adds capacitance that is not in the C_Sigma budget and is a distributed element at 40-60 GHz. The lumped beta model, and with it the whole P2/P5 coupling chain, breaks."
+     },
+     {
+      "id": "B",
+      "name": "shared interface defect (heterostructure seam)",
+      "verdict": "REJECTED",
+      "reason": "confinement is one-sided at BOTH frequencies: the readout-lattice side is transparent at 145 GHz (higher-order bands) and the drive-lattice side is a homogenised eps ~ 8.19 slab at 37.44 GHz. A mode bounded on only one side is not a resonator; both Q's collapse to the open-slab radiation value."
+     }
+    ]
+   },
+   "footprint": {
+    "chip_footprint_readout_mm": 34.08647943266748,
+    "chip_footprint_drive_mm": 8.8011,
+    "outer_mirror_rows": 8,
+    "chip_rule": ">=15x15 periods (~9x9 mm) to suppress in-plane leakage",
+    "row_pitch_readout_um": 1967.9838076177214,
+    "row_pitch_drive_um": 508.1317454164815
+   }
+  },
+  "purcell_filter": {
+   "ladder_option": {
+    "model": "ln Q_w = sigma*N + b",
+    "sigma": 1.43925,
+    "b": 5.31077,
+    "usable_N_measured": [
+     3,
+     4
+    ],
+    "N_naive_brief_grid": [
+     {
+      "kappa_target_MHz": 1.0,
+      "N_naive": 3.793466883523808,
+      "impossible": "kappa_target 1 MHz <= kappa_intrinsic 3.257 MHz: no value of N reaches it, the cavity is already broader than the target."
+     },
+     {
+      "kappa_target_MHz": 3.0,
+      "N_naive": 3.0301441191200498,
+      "impossible": "kappa_target 3 MHz <= kappa_intrinsic 3.257 MHz: no value of N reaches it, the cavity is already broader than the target."
+     }
+    ],
+    "at_recommended": {
+     "kappa_target_MHz": 3.699999999999994,
+     "f_r_GHz": 37.43887668190708,
+     "Q_total_naive": 10118.615319434362,
+     "N_naive": 2.7176391226938037,
+     "model": "ln Q_w = sigma*N + b",
+     "sigma": 1.43925,
+     "b": 5.31077,
+     "usable_N_measured": [
+      3,
+      4
+     ],
+     "kappa_intrinsic_MHz": 2.562253309464818,
+     "Q_w_required": 32906.161796257555,
+     "N_with_internal": 3.537012477232713,
+     "eta_readout": 0.3074991055500481
+    },
+    "status": "DESIGN ESTIMATE",
+    "caveat": "the ladder fit ln Q_w = sigma N + b is measured from TWO points (N = 3, 4; photonics.json flags trivial_r2_warning), and it is applied at a_r by Maxwell scale invariance of Q_w (a purely geometric/radiative quantity). No FDTD ladder has been run at a_r."
+   },
+   "bandpass_option": {
+    "formula": "Gamma_Purcell -> Gamma_Purcell * (kappa_f/(2*Delta_r))^2",
+    "Delta_r_GHz": -3.157752019551019,
+    "rows": [
+     {
+      "filter_bandwidth_MHz": 100.0,
+      "suppression": 0.00025071710565425343,
+      "suppression_dB": -36.00816034458933,
+      "T1_Purcell_gain": 3988.559126791415
+     },
+     {
+      "filter_bandwidth_MHz": 200.0,
+      "suppression": 0.0010028684226170137,
+      "suppression_dB": -29.987560431309706,
+      "T1_Purcell_gain": 997.1397816978538
+     },
+     {
+      "filter_bandwidth_MHz": 500.0,
+      "suppression": 0.0062679276413563365,
+      "suppression_dB": -22.028760257868953,
+      "T1_Purcell_gain": 159.54236507165658
+     }
+    ],
+    "status": "DESIGN ESTIMATE",
+    "caveat": "standard single-pole bandpass-filter estimate; no FDTD of a photonic-crystal filter at a_r has been run. It is the escape hatch from the (CEIL) kappa ceiling: with the Purcell constraint lifted, kappa_r is limited only by chi/kappa >= 1, and the readout port efficiency eta can be pushed toward 1.",
+    "role": "the only clean escape from constraint C3"
+   }
+  },
+  "control_line": {
+   "operating_point": {
+    "f_r_GHz": 37.43887668190708,
+    "f01_GHz": 40.5966287014581,
+    "Delta_qr_GHz": 3.157752019551019,
+    "g_MHz": 109.06452140671544,
+    "kappa_MHz": 3.699999999999994,
+    "kappa_ext_MHz": 1.137746690535176,
+    "kappa_int_MHz": 2.562253309464818,
+    "eta_readout": 0.3074991055500481
+   },
+   "formulas": {
+    "n_drive": "n = (P_in/(hbar*omega_d)) * kappa_ext / (Delta_qr^2 + (kappa/2)^2); kappa, kappa_ext, Delta_qr in rad/s, P_in in W, omega_d = 2 pi f_drive",
+    "rabi": "Omega_R = 2 g sqrt(n_drive); quoted as Omega_R/2pi in Hz",
+    "detuning": "Delta_qr = 2 pi (f01 - f_r) = -2 pi Delta_r",
+    "leakage": "Lorentzian photon response of a mode at detuning, (kappa/2)^2 / (Delta^2 + (kappa/2)^2)"
+   },
+   "rabi_budget": [
+    {
+     "Omega_R_over_2pi_MHz": 10.0,
+     "n_drive": 0.0021017110750901065,
+     "P_in_W": 3.1132177037589295e-12,
+     "P_in_pW": 3.1132177037589295,
+     "P_in_dBm": -85.06790508538393,
+     "gate_time_pi_ns": 50.0
+    },
+    {
+     "Omega_R_over_2pi_MHz": 50.0,
+     "n_drive": 0.05254277687725266,
+     "P_in_W": 7.783044259397323e-11,
+     "P_in_pW": 77.83044259397323,
+     "P_in_dBm": -71.08850499866355,
+     "gate_time_pi_ns": 10.0
+    }
+   ],
+   "readout_tone_budget": [
+    {
+     "n_readout": 1.0,
+     "P_in_W": 4.6887446687611885e-16,
+     "P_in_aW": 468.87446687611884,
+     "P_in_dBm": -123.28943416646375
+    },
+    {
+     "n_readout": 10.0,
+     "P_in_W": 4.6887446687611875e-15,
+     "P_in_aW": 4688.744668761187,
+     "P_in_dBm": -113.28943416646375
+    }
+   ],
+   "leakage": {
+    "control_tone_into_drive_cavity": {
+     "f_tone_GHz": 40.5966287014581,
+     "f_mode_GHz": 145.0,
+     "detuning_GHz": 104.4033712985419,
+     "kappa_drive_MHz": 9.923554411875415,
+     "suppression": 2.258631979102174e-09,
+     "suppression_dB": -86.46154527143261
+    },
+    "readout_tone_into_drive_cavity": {
+     "f_tone_GHz": 37.43887668190708,
+     "f_mode_GHz": 145.0,
+     "detuning_GHz": 107.56112331809291,
+     "suppression": 2.127961959821937e-09,
+     "suppression_dB": -86.72036139904756
+    },
+    "drive_tone_into_readout_cavity": {
+     "f_tone_GHz": 145.0,
+     "f_mode_GHz": 37.43887668190708,
+     "detuning_GHz": 107.56112331809291,
+     "kappa_readout_MHz": 3.699999999999994,
+     "suppression": 2.958235867298456e-10,
+     "suppression_dB": -95.28967201609463
+    },
+    "caveat": "Lorentzian mode filtering only. The port-to-far-cavity coupling coefficient (how much of a tone injected at the readout port even reaches the drive cavity's near field) is a layout quantity and is NOT modelled -- these dB figures are the on-chip frequency selectivity, not the total isolation."
+   },
+   "pair_breaking": {
+    "two_Delta_over_h_GHz": 147.01374591876302,
+    "readout_sample_47p6GHz": {
+     "f_GHz": 47.5966287014581,
+     "hf_over_2Delta": 0.3237563154656238,
+     "margin_2Delta_over_hf": 3.0887428359870226,
+     "sub_gap_filling_window_nu": [
+      -2.8111155857389942,
+      -1.9888844142610058
+     ],
+     "window_halfwidth_nu": 0.4111155857389942
+    },
+    "drive_145GHz": {
+     "f_GHz": 145.0,
+     "hf_over_2Delta": 0.9863023290361176,
+     "margin_2Delta_over_hf": 1.0138879028880208,
+     "window_halfwidth_nu": 0.05857106400995393
+    },
+    "statement": "LINEAR (single-photon) audit only, carried over from P3 unchanged: h f_r < 2 Delta(nu) over |nu + 2.4| < 0.4111, i.e. essentially the whole superconducting dome, with a 3.089x margin at the apex. The readout tone is therefore not pair-breaking at any power in this model.",
+    "PARAMETRIC_CAVEAT": "photon-ASSISTED (multi-photon) pair breaking is NOT modelled. The naive order is n_gamma >= 2 Delta / (h f_r) = 3.089, i.e. a 4-photon process at the readout frequency; its rate depends on an unmodelled nonlinearity and on the intracavity photon number. Nothing here bounds it -- it is flagged, not computed."
+   }
+  }
+ },
+ "allocation": {
+  "fixed_drive": {
+   "verdict": "EXACTLY 1 CHANNEL",
+   "scenario": "fixed 145 GHz drive tone (photonics.json drive mode)",
+   "constraint_src": "out/m6/p3_qp.json:pair_breaking_audit.drive_cavity",
+   "channels": {
+    "1e-03": 1,
+    "1e-04": 1
+   },
+   "nu_window": [
+    -2.458571064009954,
+    -2.341428935990046
+   ],
+   "nu_window_halfwidth": 0.05857106400995393,
+   "window_frac_of_dome_halfwidth": 0.11714212801990787,
+   "f01_span_GHz": 0.2906162406990802,
+   "f01_at_apex_GHz": 40.59715652386841,
+   "f01_at_window_edge_GHz": 40.306540283169326,
+   "minimum_spacing_at_t_g_8ns_GHz": 0.9234687383874222,
+   "statement": "the f01 span inside the sub-gap window (0.2906 GHz) is smaller than the minimum measured channel spacing (0.9235 GHz at t_g = 8 ns), so slowing the gate never buys a second channel",
+   "sweet_spot_cost": {
+    "nu_edge": -2.458571064009954,
+    "D1_edge_GHz_per_nu": 9.958083113602356,
+    "D2_apex_GHz_per_nu2": -168.84229756897184,
+    "dnu_rms": 0.0001,
+    "Tphi_apex_us": 188.5249672427382,
+    "Tphi_edge_us": 0.15982487922248392,
+    "contrast": 1179.5720926546257
+   },
+   "degeneracy_note": "f01(nu) is even about the apex, so every f01 inside the window except the apex value is realised at two fillings; the span, not the window width, is the allocation resource"
+  },
+  "tracking_drive": {
+   "scenario": "per-qubit drive tone tracking 2*Delta(nu)",
+   "f01_range_GHz": [
+    23.687917357656662,
+    40.5966287014581
+   ],
+   "f01_span_GHz": 16.90871134380144,
+   "channels_at_t_g_floor": {
+    "1e-03": 5,
+    "1e-04": 2
+   },
+   "channel_table": [
+    {
+     "t_g_ns": 1.0111693792084075,
+     "bandwidth_1_over_tg_GHz": 0.9889539977791342,
+     "spacing_GHz": {
+      "1e-03": 4.212005705701001,
+      "1e-04": 11.952149911016534
+     },
+     "spacing_in_units_of_1_over_tg": {
+      "1e-03": 4.259051194655952,
+      "1e-04": 12.085648005728412
+     },
+     "channels_fixed_drive": {
+      "1e-03": 1,
+      "1e-04": 1
+     },
+     "channels_tracking_drive": {
+      "1e-03": 5,
+      "1e-04": 2
+     }
+    },
+    {
+     "t_g_ns": 2.0,
+     "bandwidth_1_over_tg_GHz": 0.5,
+     "spacing_GHz": {
+      "1e-03": 1.5235893789641461,
+      "1e-04": 3.6094529487376406
+     },
+     "spacing_in_units_of_1_over_tg": {
+      "1e-03": 3.0471787579282923,
+      "1e-04": 7.218905897475281
+     },
+     "channels_fixed_drive": {
+      "1e-03": 1,
+      "1e-04": 1
+     },
+     "channels_tracking_drive": {
+      "1e-03": 12,
+      "1e-04": 5
+     }
+    },
+    {
+     "t_g_ns": 4.0,
+     "bandwidth_1_over_tg_GHz": 0.25,
+     "spacing_GHz": {
+      "1e-03": 1.0874380215985813,
+      "1e-04": 1.464010940937691
+     },
+     "spacing_in_units_of_1_over_tg": {
+      "1e-03": 4.349752086394325,
+      "1e-04": 5.856043763750764
+     },
+     "channels_fixed_drive": {
+      "1e-03": 1,
+      "1e-04": 1
+     },
+     "channels_tracking_drive": {
+      "1e-03": 16,
+      "1e-04": 12
+     }
+    },
+    {
+     "t_g_ns": 8.0,
+     "bandwidth_1_over_tg_GHz": 0.125,
+     "spacing_GHz": {
+      "1e-03": 0.9234687383874222,
+      "1e-04": 0.9577862174104019
+     },
+     "spacing_in_units_of_1_over_tg": {
+      "1e-03": 7.387749907099377,
+      "1e-04": 7.662289739283215
+     },
+     "channels_fixed_drive": {
+      "1e-03": 1,
+      "1e-04": 1
+     },
+     "channels_tracking_drive": {
+      "1e-03": 19,
+      "1e-04": 18
+     }
+    }
+   ],
+   "hardware_requirement": "one drive tone per filling, each held below 2*Delta(nu)/h; the fixed 145 GHz photonic drive mode cannot serve this scenario",
+   "sweet_spot_note": "only one qubit can sit at nu = -2.4; every other channel pays the first-order gate-noise penalty of qubit_targets.json:gate_noise"
+  },
+  "spacing_criterion": {
+   "criterion": "spacing = largest detuning at which a spectator qubit, hit by the same calibrated pulse, still leaves its ground state with probability >= tol",
+   "mechanism": "far-detuning crosstalk is set by the pulse-edge discontinuities, not by the Gaussian core. The DRAG quadrature Om_y = -q E'/delta has a STEP at t = 0, t_g (amplitude tail ~1/df, error ~1/df^2); the envelope itself has only a kink (error ~1/df^4). Measured slopes are in tail_slope_loglog and confirm both exponents.",
+   "t_g_ns": 1.0111693792084075,
+   "spacing_GHz": {
+    "1e-03": 4.212005705701001,
+    "1e-04": 11.952149911016534
+   },
+   "spacing_in_units_of_1_over_tg": {
+    "1e-03": 4.259051194655952,
+    "1e-04": 12.085648005728412
+   },
+   "bandwidth_1_over_tg_GHz": 0.9889539977791342,
+   "tail_slope_loglog_drag": -2.2974404466759166,
+   "note": "spacing is MEASURED (spectator qubit hit by the same calibrated pulse), not set at k/t_g"
+  },
+  "channel_count_rule": "N = floor(f01_span / spacing) + 1",
+  "fork_statement": "THE SINGLE-VS-MULTI-QUBIT FORK. With the drive plane pinned at 145 GHz the qubit may only be gated over a 0.2906 GHz span of f01, which is below the minimum measured channel spacing at any gate time: exactly one qubit. The M6_BRIEF.md Sec. 1 claim of 'multi-qubit frequency allocation via gate' survives ONLY in the tracking-drive scenario (per-qubit tone held below 2 Delta(nu)/h), which gives 5/2 channels at 1.011 ns, 12/5 at 2 ns and 19/18 at 8 ns for leakage thresholds 1e-3/1e-4. P3's drive-plane constraint is therefore not a pair-breaking footnote -- it is the single-vs-multi-qubit fork for paper 2. A second channel would also mean leaving the apex, costing 1180x in quasistatic T_phi."
+ },
+ "two_qubit_sketch": {
+  "label": "SKETCH -- parametric closed-form rates, not simulated",
+  "parametric_disclaimer": "PARAMETRIC SKETCH ONLY: closed-form rates, no simulation, no decoherence and no gate fidelity is claimed. C_qq is a free design parameter, not a measured input.",
+  "model": {
+   "H_int": "H_int/h = 8 E_C (C_qq/C_Sigma) n_1 n_2 (first order in C_qq/C_Sigma)",
+   "J": "J = 8 E_C (C_qq/C_Sigma) n01^2",
+   "CR": "nu_ZX = (J Om / D)(alpha/(alpha + D)); t_CNOT ~ 1/(4 nu_ZX)  [Magesan & Gambetta, PRA 101, 052308]",
+   "budget_note": "C_Sigma is locked at 13.0 fF by E_J/E_C = 100, so C_qq spends the same budget that P2 found the collection electrodes spend"
+  },
+  "params": {
+   "C_Sigma_fF": 12.999713035702571,
+   "EC_GHz": 1.490050531997167,
+   "n01": 1.3047875496582912,
+   "ladder_ratio": 1.3852259877480004,
+   "anharm_GHz": -1.6323417967519944,
+   "C_qq_fF_range": [
+    0.001,
+    1.0
+   ],
+   "detunings_GHz": [
+    0.29,
+    1.0,
+    2.0
+   ]
+  },
+  "exchange": [
+   {
+    "C_qq_fF": 0.001,
+    "C_qq_over_C_Sigma": 7.692477497415425e-05,
+    "J_MHz": 1.5611219363919724,
+    "t_iSWAP_ns": 320.28247656015134,
+    "t_sqrt_iSWAP_ns": 160.14123828007567,
+    "t_CZ_11_20_ns": 231.2131590029171,
+    "J_over_anharm": 0.0009563695174002564,
+    "dispersive_ok_vs_detuning": {
+     "0.29": true,
+     "1": true,
+     "2": true
+    }
+   },
+   {
+    "C_qq_fF": 0.01,
+    "C_qq_over_C_Sigma": 0.0007692477497415425,
+    "J_MHz": 15.611219363919725,
+    "t_iSWAP_ns": 32.02824765601513,
+    "t_sqrt_iSWAP_ns": 16.014123828007566,
+    "t_CZ_11_20_ns": 23.12131590029171,
+    "J_over_anharm": 0.009563695174002565,
+    "dispersive_ok_vs_detuning": {
+     "0.29": true,
+     "1": true,
+     "2": true
+    }
+   },
+   {
+    "C_qq_fF": 0.1,
+    "C_qq_over_C_Sigma": 0.007692477497415426,
+    "J_MHz": 156.11219363919727,
+    "t_iSWAP_ns": 3.202824765601513,
+    "t_sqrt_iSWAP_ns": 1.6014123828007565,
+    "t_CZ_11_20_ns": 2.312131590029171,
+    "J_over_anharm": 0.09563695174002566,
+    "dispersive_ok_vs_detuning": {
+     "0.29": false,
+     "1": false,
+     "2": true
+    }
+   },
+   {
+    "C_qq_fF": 0.5,
+    "C_qq_over_C_Sigma": 0.03846238748707713,
+    "J_MHz": 780.5609681959863,
+    "t_iSWAP_ns": 0.6405649531203026,
+    "t_sqrt_iSWAP_ns": 0.3202824765601513,
+    "t_CZ_11_20_ns": 0.46242631800583417,
+    "J_over_anharm": 0.4781847587001283,
+    "dispersive_ok_vs_detuning": {
+     "0.29": false,
+     "1": false,
+     "2": false
+    }
+   },
+   {
+    "C_qq_fF": 1.0,
+    "C_qq_over_C_Sigma": 0.07692477497415426,
+    "J_MHz": 1561.1219363919727,
+    "t_iSWAP_ns": 0.3202824765601513,
+    "t_sqrt_iSWAP_ns": 0.16014123828007565,
+    "t_CZ_11_20_ns": 0.23121315900291708,
+    "J_over_anharm": 0.9563695174002566,
+    "dispersive_ok_vs_detuning": {
+     "0.29": false,
+     "1": false,
+     "2": false
+    }
+   }
+  ],
+  "dispersive_budget": {
+   "0.29": {
+    "C_qq_max_fF": 0.018576383640488775,
+    "J_at_cap_MHz": 28.999999999999996,
+    "t_iSWAP_at_cap_ns": 17.24137931034483
+   },
+   "1": {
+    "C_qq_max_fF": 0.06405649531203027,
+    "J_at_cap_MHz": 100.0,
+    "t_iSWAP_at_cap_ns": 5.0
+   },
+   "2": {
+    "C_qq_max_fF": 0.12811299062406054,
+    "J_at_cap_MHz": 200.0,
+    "t_iSWAP_at_cap_ns": 2.5
+   }
+  },
+  "design_target": {
+   "statement": "C_qq must be TENS OF aF, not the 'obvious' 0.1-1 fF",
+   "reason": "J = 8 E_C (C_qq/C_Sigma) n01^2 with E_C = 1.49 GHz and n01 = 1.305 gives J = 156 / 1561 MHz at C_qq = 0.1 / 1 fF, i.e. J/|anharm| = 0.096 / 0.956 -- already outside the dispersive regime",
+   "C_qq_max_fF_vs_detuning": {
+    "0.29": 0.018576383640488775,
+    "1": 0.06405649531203027,
+    "2": 0.12811299062406054
+   },
+   "budget_note": "C_Sigma is locked at 13.0 fF by E_J/E_C = 100, so C_qq spends the same budget that P2 found the collection electrodes spend"
+  },
+  "representative_cross_resonance": {
+   "C_qq_fF": 0.01,
+   "detuning_GHz": 1.0,
+   "J_MHz": 15.611219363919725,
+   "Omega_GHz": 0.9025347996418792,
+   "nu_ZX_MHz": 36.3713980415353,
+   "t_CNOT_ns": 6.873532870925273,
+   "valid_dispersive": true,
+   "valid_weak_drive": false,
+   "straddling": true
+  },
+  "caveats": [
+   "no simulation: closed-form rates only",
+   "no decoherence and no fidelity is claimed",
+   "C_qq is a free design parameter, not a measured input",
+   "CR rows with valid_dispersive = false are outside the perturbative regime the formula was derived in"
+  ]
+ },
+ "open_items": {
+  "cpr_harmonics": {
+   "status": "RESOLVED (sensitivity computed)",
+   "resolved_by": "out/m6/pextra_cpr.json (module qubit/cpr_transmon.py, tests/test_m6_pextra_cpr.py)",
+   "resolution_headline": "at tau = 0.8 and fixed E_J the measured Beenakker CPR shifts the anharmonicity by -56% and eps1 by +182%; the E_J/E_C selection window collapses from 4 passing ratios to [100] and the design lock at 100 is unchanged; the frozen-parity margin falls to 545x the qp-limited T1 (x_qp = 1e-6, T_qp = 20 mK), still >5e2.",
+   "remaining_work": "FUTURE WORK, not a flag: including the CPR harmonics in the PRODUCTION transmon Hamiltonian (and re-deriving every sec. 3-8 number at the shifted operating point) is an owner decision the sensitivity study quantifies but does not make. Every number in this export is still the sinusoidal-potential value.",
+   "artifact_note": "out/m6/pextra_cpr.json is a downstream P-extra deliverable, NOT one of the seven sha256-pinned P7 source artifacts above; the numbers in resolution_headline are read from it at export time.",
+   "statement": "qubit/spectrum.py uses the contract's pure -E_J cos(phi) potential, while material.json:cpr carries the measured skewed Beenakker harmonics (tau = 0.8: c1 = 0.9832, c2 = -0.1842, c3 = 0.0522) -- paper 1's own headline. Higher CPR harmonics would shift anharmonicity and charge dispersion measurably.",
+   "action": "candidate P-extra sensitivity computation for paper 2; NOT acted on silently",
+   "src": "paper/decisions.md 2026-07-27 'M6 flag (deferred): non-sinusoidal CPR vs transmon Hamiltonian'"
+  },
+  "photon_assisted_pair_breaking": {
+   "status": "FLAGGED, NOT BOUNDED",
+   "statement": "photon-ASSISTED (multi-photon) pair breaking is NOT modelled. The naive order is n_gamma >= 2 Delta / (h f_r) = 3.089, i.e. a 4-photon process at the readout frequency; its rate depends on an unmodelled nonlinearity and on the intracavity photon number. Nothing here bounds it -- it is flagged, not computed.",
+   "linear_audit_holds": "LINEAR (single-photon) audit only, carried over from P3 unchanged: h f_r < 2 Delta(nu) over |nu + 2.4| < 0.4111, i.e. essentially the whole superconducting dome, with a 3.089x margin at the apex. The readout tone is therefore not pair-breaking at any power in this model.",
+   "src": "out/m6/p5_two_cavity.json:control_line.pair_breaking"
+  },
+  "higher_order_gap_capture_145GHz": {
+   "status": "PARAMETRIC CAVEAT (pessimistic default assumed)",
+   "statement": "whether 145 GHz lands inside a higher-order gap of the readout lattice is NOT computed here -- it needs an MPB/FDTD band run at a_r, which is out of P5 scope. The default design assumption is the pessimistic one: higher-order bands are dense, so the readout lattice does NOT confine 145 GHz. This is a parametric caveat, not a computed result.",
+   "a_r_over_lambda": 1.0991024814766543,
+   "src": "out/m6/p5_two_cavity.json:geometry.gap_positions.f_cav_in_readout_lattice"
+  },
+  "heterostructure_fdtd_at_a_r": {
+   "status": "NOT RUN (out of P5 scope)",
+   "statement": "the nested concept overruns by 0.78 readout mirror rows per side; either the drive cavity is cut back to ~5.0 mirror rows (Q_i then unverified -- the measured 14611.7 assumes 8 rows in a 24a cell) or the readout defect is enlarged beyond L3. Both need an FDTD run at a_r = 2272.4 um. Every ladder/filter number in two_cavity is a DESIGN ESTIMATE.",
+   "src": "out/m6/p5_two_cavity.json:geometry.concepts[C]"
+  }
+ },
+ "provenance": {
+  "source_files": [
+   {
+    "path": "qubit_targets.json",
+    "role": "owner-provided reference scan (M6 expansion pack)",
+    "date": "2026-07-27",
+    "sha256_16": "2b26804cba568530"
+   },
+   {
+    "path": "out/m6/p2_coupling.json",
+    "role": "P2 coupling-g convention",
+    "module": "qubit/coupling.py (M6 deliverable P2)",
+    "date": "2026-07-27",
+    "sha256_16": "9f3b2fff9703c195"
+   },
+   {
+    "path": "out/m6/p3_qp.json",
+    "role": "P3 full quasiparticle kernel",
+    "module": "qubit/qp_kernel.py",
+    "date": "2026-07-27",
+    "sha256_16": "b04471233459db8c"
+   },
+   {
+    "path": "out/m6/p4_t2_maps.json",
+    "role": "P4 1/f filter-function T2 maps",
+    "module": "qubit/noise_1f.py",
+    "date": "2026-07-27",
+    "sha256_16": "0677803f3b2e0982"
+   },
+   {
+    "path": "out/m6/p4_t2_maps.npz",
+    "role": "P4 dense maps (incl. exact linear+quadratic)",
+    "date": "2026-07-27",
+    "sha256_16": "0c551906305bca55"
+   },
+   {
+    "path": "out/m6/p5_two_cavity.json",
+    "role": "P5 two-cavity feasibility + control line",
+    "module": "qubit/two_cavity.py",
+    "date": "2026-07-27",
+    "sha256_16": "85c02cd28a213715"
+   },
+   {
+    "path": "out/m6/p6_gates.json",
+    "role": "P6 gate-set sketch + allocation + two-qubit sketch",
+    "module": "qubit/gates.py",
+    "date": "2026-07-27",
+    "sha256_16": "20eaac4e76f431c5"
+   }
+  ],
+  "upstream_paper1_exports": [
+   {
+    "path": "material.json",
+    "role": "M1: Delta0_meV, sc_dome, cpr harmonics"
+   },
+   {
+    "path": "junction.json",
+    "role": "M3: contract Ic_nA -> E_J, C_fF"
+   },
+   {
+    "path": "photonics.json",
+    "role": "M2/M4: geometry, modes, Q_i, ladder fit"
+   }
+  ],
+  "package_modules": [
+   "qubit/inputs.py",
+   "qubit/spectrum.py",
+   "qubit/dome.py",
+   "qubit/cavity.py",
+   "qubit/qp.py",
+   "qubit/coupling.py",
+   "qubit/qp_kernel.py",
+   "qubit/noise_1f.py",
+   "qubit/two_cavity.py",
+   "qubit/gates.py"
+  ],
+  "recomputed_here": [
+   "qubit.design_point() -> design.recomputed_check",
+   "qubit.cavity.drive_cavity_budget() -> AT-4 reference cross-check",
+   "qubit.qp.qp_budget() -> budgets.T1_stack.qp_full_kernel.small_freq_reference.recomputed_check_qubit_qp",
+   "qubit.dome.sweet_spot_report() -> design.recomputed_check D1/D2"
+  ],
+  "seed_policy": {
+   "deterministic": true,
+   "rng_used": false,
+   "note": "no stochastic step anywhere in M6: P2 is closed-form lumped-circuit algebra, P3 adaptive quadrature, P4 filter-function integrals + batched slogdet, P5 closed-form algebra + deterministic grid sweeps, P6 fixed-step RK4. P3/P5/P6 log seed = 0 as unused.",
+   "logged_seeds": {
+    "P2": null,
+    "P3": 0,
+    "P4": null,
+    "P5": 0,
+    "P6": 0
+   }
+  },
+  "tests": {
+   "files": [
+    {
+     "path": "tests/test_m6_acceptance.py",
+     "n_tests": 57,
+     "covers": "AT-1..AT-6 (M6_BRIEF.md Sec. 3) + eps1 ULP/mpmath rules"
+    },
+    {
+     "path": "tests/test_m6_p2.py",
+     "n_tests": 19,
+     "covers": "P2 coupling convention (beta divider, budget cap, identities)"
+    },
+    {
+     "path": "tests/test_m6_p3.py",
+     "n_tests": 53,
+     "covers": "P3 quasiparticle kernel, parity bound, thermal floor, pair-breaking"
+    },
+    {
+     "path": "tests/test_m6_p4.py",
+     "n_tests": 46,
+     "covers": "P4 1/f filter functions, Ramsey/echo maps, additivity diagnostic"
+    },
+    {
+     "path": "tests/test_m6_p5.py",
+     "n_tests": 67,
+     "covers": "P5 two-cavity feasibility, C1-C8 constraints, control line, chi-convention pinning"
+    },
+    {
+     "path": "tests/test_m6_p6.py",
+     "n_tests": 55,
+     "covers": "P6 gate floor, DRAG, allocation, two-qubit sketch"
+    },
+    {
+     "path": "tests/test_qubit_export.py",
+     "n_tests": 178,
+     "covers": "P7 export schema + artifact-consistency (this file's contract)"
+    }
+   ],
+   "m6_production_total": 297,
+   "p7_export_total": 178,
+   "paper1_total": 100,
+   "full_suite_before_P7": 397,
+   "full_suite": 575,
+   "note": "counts are live `pytest --collect-only` counts",
+   "full_suite_scope": "full_suite counts ONLY the tests this export is accountable for: paper-1 (100) + M6 production (297) + the P7 export contract (178). It is NOT the whole-repository pytest total, which is larger and keeps growing as other modules land tests (e.g. tests/test_m6_pextra_cpr.py, added after M6 closed, is outside this accounting). Cite this number as the M6-owned total, never as 'the full repository suite'."
+  },
+  "commit_basis": "7b1c8231de854f1464a19aed438e05c6c68b1864",
+  "commit_basis_note": "git HEAD at export time -- INFORMATIONAL ONLY. It records which commit the export was cut from; it is not a data field and it is EXCLUDED from the payload-freshness comparison in tests/test_qubit_export.py::test_export_is_current. Otherwise every unrelated commit by another module would turn that test red without any number having changed. Data freshness is guarded instead by the sha256_16 digests of the source artifacts above.",
+  "decisions_log": "paper/decisions.md -- the dated 2026-07-27 M6 entries (milestone 1, eps1 ULP finding, CPR-harmonics flag, P2, P3, P5, P4, P6, and the later P7 / P-extra entries); this export is not a count of them",
+  "report": "paper/M6_REPORT.md",
+  "figures": [
+   "figs/fig_m6_p7_fig1_design.png",
+   "figs/fig_m6_p7_fig2_dome.png",
+   "figs/fig_m6_p7_fig3_budget.png",
+   "figs/fig_m6_p7_fig4_architecture.png"
+  ],
+  "reference_figure": "fig_m6_qubit.png (owner-provided M6 expansion pack)",
+  "claim_discipline": "TBG coherence has never been measured. Paper 2 is a DESIGN STUDY: every coherence number in this export is parametric in the quasiparticle fraction x_qp or in the 1/f gate-noise amplitude A, and no absolute T1 or T2 value is claimed for a TBG junction anywhere."
+ }
+}

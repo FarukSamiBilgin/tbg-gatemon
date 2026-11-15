@@ -1,0 +1,47 @@
+Figure 2 (paper 2) -- dome spectrum, sweet spot, and drive/gate-allocation constraints.
+
+(a) f01(nu) recomputed with qubit.dome.f01_of (unmodified tested package;
+E_C = 1.4901 GHz held at the E_J/E_C=100 design value, src:
+qubit_targets.json:design.EC_GHz; dome shape from material.json:sc_dome via
+qubit/inputs.py:NU_OPT=-2.4, NU_HALFWIDTH=0.5). The apex at
+nu = -2.4 is the double sweet spot (max E_J and df01/dnu = 0
+simultaneously), matching qubit_targets.json:design.f01_GHz =
+40.5966 GHz.
+
+Shaded green band: the P3 pair-breaking usable window under a FIXED 145 GHz
+drive, |nu+2.4| < 0.058571, src: out/m6/p3_qp.json:
+pair_breaking_audit.drive_cavity.sub_gap_filling_window /
+.window_halfwidth_nu. Outside this band the 145 GHz drive tone exceeds
+2*Delta(nu)/h and becomes pair-breaking.
+
+Text box: P6 gate-allocation verdict -- a fixed 145 GHz drive plane supports
+EXACTLY 1 qubit channel (src: out/m6/p6_gates.json:
+allocation.fixed_drive.channels, both 1e-3 and 1e-4 leakage tolerances);
+a per-qubit tracking drive (retuned to 2*Delta(nu) at each filling) supports
+5-19 channels at the 1e-3 tolerance and
+2-18 channels at the 1e-4 tolerance, across the
+scanned gate times t_g = 1.011-8 ns (src: out/m6/p6_gates.json:
+allocation.spacing_vs_gate_time[*].channels_tracking_drive).
+
+(b) T2*(nu) (Ramsey, blue circles) and T2_echo(nu) (green squares) at 1/f
+gate-noise amplitude A = 1e-4, src: out/m6/p4_t2_maps.npz (T2_ramsey,
+T2_echo arrays, A-grid index at A=1.000e-4). Dashed grey: the milestone-1
+quasistatic estimate 1/T_phi = 2*pi|D1(nu)|*dnu_rms + pi|D2(nu)|*dnu_rms^2 at
+dnu_rms = 1e-4 (additive-rate combination of qubit/dome.py's
+Tphi_first_order/Tphi_second_order formulas, the same "chi_total = chi_1 +
+chi_2" convention documented in paper/decisions.md 2026-07-27 M6 P4 entry;
+D1(nu), D2(nu) from out/m6/p4_t2_maps.npz:D1_GHz,D2_GHz). At the apex this
+additive estimate reduces exactly to qubit_targets.json:
+gate_noise.Tphi_apex_us[1e-04] = 188.5250 us
+(D1=0 there).
+
+Apex/off-apex (nu=-2.5) T2 contrast at A=1e-4: Ramsey 1292x,
+echo 380x (computed from the plotted npz arrays; matches
+paper/decisions.md 2026-07-27 M6 P4 entry's reported 1292x/380x -- NOTE this
+supersedes the milestone-1 "~2000x" quasistatic figure, which is
+Ramsey/quasistatic-specific and amplitude-specific per that entry).
+
+src: qubit_targets.json:design, out/m6/p3_qp.json:pair_breaking_audit,
+out/m6/p4_t2_maps.{json,npz}, out/m6/p6_gates.json:allocation,
+qubit/dome.py (f01_of, D1, D2, Tphi_first_order, Tphi_second_order),
+qubit/inputs.py (NU_OPT, NU_HALFWIDTH). Deterministic; no RNG.

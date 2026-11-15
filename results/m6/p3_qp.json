@@ -1,0 +1,273 @@
+{
+ "kernel": {
+  "w_marginality": 0.5522834405415534,
+  "ratio_vs_smallfreq": 1.1724913601591385,
+  "ratio_vs_smallfreq_decomposition": {
+   "total": 1.1724913601591385,
+   "kernel_shape": 1.129664421949038,
+   "kernel_shape_T0": 1.1296644281691695,
+   "matrix_element": 0.9997793889639456,
+   "harmonic_identity": 1.0381402290658452,
+   "product_check": 1.1724913601591378,
+   "w": 0.5522834405415534,
+   "T_qp_K": 3.527773508951225e-08,
+   "f_GHz": 40.5966287014581
+  },
+  "ratio_vs_smallfreq_analytic_T0": 1.1296644281691695,
+  "T1_us_vs_xqp": {
+   "T_qp->0": {
+    "1e-08": 551.9965921844334,
+    "1e-07": 55.19965921844335,
+    "1e-06": 5.519965921844335,
+    "1e-05": 0.5519965921844334
+   },
+   "0.020": {
+    "1e-08": 553.7079311364939,
+    "1e-07": 55.370793113649405,
+    "1e-06": 5.5370793113649395,
+    "1e-05": 0.553707931136494
+   },
+   "0.050": {
+    "1e-08": 556.2326369964865,
+    "1e-07": 55.62326369964864,
+    "1e-06": 5.562326369964865,
+    "1e-05": 0.5562326369964864
+   },
+   "0.100": {
+    "1e-08": 560.3363437489768,
+    "1e-07": 56.03363437489768,
+    "1e-06": 5.603363437489769,
+    "1e-05": 0.5603363437489768
+   },
+   "0.200": {
+    "1e-08": 568.1994396634726,
+    "1e-07": 56.81994396634726,
+    "1e-06": 5.681994396634726,
+    "1e-05": 0.5681994396634725
+   }
+  },
+  "T1_us_vs_xqp_reference_smallfreq": {
+   "1e-08": 647.2112351735356,
+   "1e-07": 64.72112351735356,
+   "1e-06": 6.472112351735357,
+   "1e-05": 0.6472112351735356
+  },
+  "T1_shortening_factor_vs_reference": 1.1724913601591385,
+  "T_qp_dependence": {
+   "T_qp_K": [
+    0.02,
+    0.05,
+    0.1,
+    0.2
+   ],
+   "kernel_shape_ratio": [
+    1.1261729806686676,
+    1.1210613505079272,
+    1.1128510905714486,
+    1.0974507676339653
+   ],
+   "total_ratio": [
+    1.1688675541365727,
+    1.1635621359226784,
+    1.1550406151478863,
+    1.1390564474277893
+   ],
+   "T1_us_at_xqp_1e-6": [
+    5.5370793113649395,
+    5.562326369964865,
+    5.603363437489769,
+    5.681994396634726
+   ]
+  },
+  "matrix_elements": {
+   "sin_half_01_sq": 0.03534753928134744,
+   "cos_half_00_sq": 0.9639707071863669,
+   "sin_half_01_sq_phasegrid": 0.03534753928134748,
+   "cos_half_00_sq_phasegrid": 0.9639707071863671,
+   "sin_half_01_sq_harmonic": 0.035355339059327376,
+   "N": 35,
+   "n_phi": 8192
+  }
+ },
+ "parity": {
+  "eps1_Hz": 37.42631804470875,
+  "delta_omega_rad_s": 235.15649164034426,
+  "cos_half_00_sq": 0.9639707071863669,
+  "w_cut_default": 5.091539952378306e-10,
+  "rate": {
+   "T0.020_x1e-08": {
+    "Gamma_parity_s": 4140430.189718582,
+    "motional_narrowing_ratio": 17607.12690020519,
+    "Tphi_parity_s": 299.49633586359306,
+    "Tphi_parity_over_T1qp": 540892.2629099285
+   },
+   "T0.020_x1e-07": {
+    "Gamma_parity_s": 41404301.89718582,
+    "motional_narrowing_ratio": 176071.26900205188,
+    "Tphi_parity_s": 2994.96335863593,
+    "Tphi_parity_over_T1qp": 54089226.29099282
+   },
+   "T0.020_x1e-06": {
+    "Gamma_parity_s": 414043018.9718582,
+    "motional_narrowing_ratio": 1760712.6900205188,
+    "Tphi_parity_s": 29949.633586359305,
+    "Tphi_parity_over_T1qp": 5408922629.099283
+   },
+   "T0.020_x1e-05": {
+    "Gamma_parity_s": 4140430189.718582,
+    "motional_narrowing_ratio": 17607126.90020519,
+    "Tphi_parity_s": 299496.33586359303,
+    "Tphi_parity_over_T1qp": 540892262909.9284
+   },
+   "T0.100_x1e-08": {
+    "Gamma_parity_s": 2010937.1891438002,
+    "motional_narrowing_ratio": 8551.484907418124,
+    "Tphi_parity_s": 145.46032470151042,
+    "Tphi_parity_over_T1qp": 259594.66367699092
+   },
+   "T0.100_x1e-07": {
+    "Gamma_parity_s": 20109371.891438004,
+    "motional_narrowing_ratio": 85514.84907418124,
+    "Tphi_parity_s": 1454.6032470151042,
+    "Tphi_parity_over_T1qp": 25959466.367699094
+   },
+   "T0.100_x1e-06": {
+    "Gamma_parity_s": 201093718.91438,
+    "motional_narrowing_ratio": 855148.4907418124,
+    "Tphi_parity_s": 14546.032470151042,
+    "Tphi_parity_over_T1qp": 2595946636.769909
+   },
+   "T0.100_x1e-05": {
+    "Gamma_parity_s": 2010937189.1438003,
+    "motional_narrowing_ratio": 8551484.907418124,
+    "Tphi_parity_s": 145460.32470151043,
+    "Tphi_parity_over_T1qp": 259594663676.99097
+   }
+  },
+  "Gamma_parity_cutoff_sensitivity": {
+   "1e-09": 397639163.7029636,
+   "1e-07": 285727444.1466112,
+   "1e-05": 173964116.93011913,
+   "1e-03": 67785526.82330567,
+   "1e-01": 10383600.462601341
+  },
+  "Tphi_parity_frozen_worst_case_s": 0.008504974649217267,
+  "Tphi_frozen_over_T1qp_at_1e6": 1536.0037613621816,
+  "verdict": "parity dephasing negligible: even the frozen-parity upper bound 1/(pi eps1) exceeds the qp-limited T1 by >1e3 across the whole x_qp band"
+ },
+ "thermal_floor": {
+  "formula": "x_qp_th(T) = sqrt(2 pi k_B T/Delta) exp(-Delta/k_B T)",
+  "Delta_over_kB_K": 3.5277735089512245,
+  "x_qp_th": {
+   "0.020": 4.690575897175746e-78,
+   "0.100": 2.0156443402722436e-16,
+   "0.200": 1.3043427932451689e-08
+  },
+  "x_qp_th_numeric": {
+   "0.020": 4.700530419549476e-78,
+   "0.100": 2.0368852374224257e-16,
+   "0.200": 1.3316042809491294e-08
+  },
+  "parametric_band": [
+   1e-08,
+   1e-05
+  ],
+  "band_floor_ratio": {
+   "0.020": 4.6905758971757464e-70,
+   "0.100": 2.0156443402722438e-08,
+   "0.200": 1.3043427932451688
+  },
+  "verdict": "the 1e-8..1e-5 band is entirely non-equilibrium: the equilibrium floor only reaches the band's bottom edge at ~200 mK, twice the 100 mK operating point"
+ },
+ "pair_breaking_audit": {
+  "control_f01": {
+   "f_GHz": 40.5966287014581,
+   "hf_meV": 0.16789416592463227,
+   "hf_over_2Delta": 0.2761417202707767,
+   "margin_2Delta_over_hf": 3.62132892856403,
+   "pct_below_threshold": 72.38582797292233,
+   "sub_gap_filling_window": [
+    -2.8253027334895893,
+    -1.9746972665104106
+   ],
+   "window_halfwidth_nu": 0.42530273348958936,
+   "f01_at_window_edge_GHz": 20.534789856195573,
+   "f01_at_apex_GHz": 40.59715652386841,
+   "f01_span_inside_window_GHz": 20.062366667672833
+  },
+  "readout_sample": {
+   "f_GHz": 47.5966287014581,
+   "hf_meV": 0.19684383980309925,
+   "hf_over_2Delta": 0.3237563154656238,
+   "margin_2Delta_over_hf": 3.0887428359870226,
+   "pct_below_threshold": 67.62436845343763,
+   "sub_gap_filling_window": [
+    -2.8111155857389942,
+    -1.9888844142610058
+   ],
+   "window_halfwidth_nu": 0.4111155857389942,
+   "f01_at_window_edge_GHz": 22.37863267021676,
+   "f01_at_apex_GHz": 40.59715652386841,
+   "f01_span_inside_window_GHz": 18.218523853651647
+  },
+  "drive_cavity": {
+   "f_GHz": 145.0,
+   "hf_meV": 0.5996718160539595,
+   "hf_over_2Delta": 0.9863023290361176,
+   "margin_2Delta_over_hf": 1.0138879028880208,
+   "pct_below_threshold": 1.3697670963882413,
+   "sub_gap_filling_window": [
+    -2.458571064009954,
+    -2.341428935990046
+   ],
+   "window_halfwidth_nu": 0.05857106400995393,
+   "f01_at_window_edge_GHz": 40.306540283169326,
+   "f01_at_apex_GHz": 40.59715652386841,
+   "f01_span_inside_window_GHz": 0.2906162406990802
+  },
+  "two_Delta_over_h_GHz": 147.01374591876302
+ },
+ "params": {
+  "EJ_GHz": 149.0050531997167,
+  "EC_GHz": 1.490050531997167,
+  "f01_GHz": 40.5966287014581,
+  "EJ_over_EC": 100,
+  "f01_GHz_target": 40.5966287014581,
+  "f01_recomputed_vs_target_rel": 0.0,
+  "Delta0_meV": 0.304,
+  "N_charge": 35,
+  "x_qp_grid": [
+   1e-08,
+   1e-07,
+   1e-06,
+   1e-05
+  ],
+  "T_qp_grid_K": [
+   0.02,
+   0.05,
+   0.1,
+   0.2
+  ],
+  "T_qp_zero_stand_in_K": 3.527773508951225e-08,
+  "boltzmann_cut_kT": 120.0,
+  "quad_epsrel": 1e-10
+ },
+ "provenance": {
+  "task": "M6 P3 -- full Catelani-type quasiparticle kernel",
+  "module": "qubit/qp_kernel.py",
+  "reference": "Catelani, Schoelkopf, Devoret, Glazman, PRB 84, 064517 (2011); Glazman & Catelani, SciPost Phys. Lect. Notes 31 (2021)",
+  "inputs": {
+   "Delta0_meV": "material.json:Delta0_meV",
+   "sc_dome": "material.json:sc_dome (Tc_max_K, nu_opt, nu_halfwidth, Delta_form)",
+   "Ic_nA": "junction.json:contract.Ic_nA -> E_J",
+   "f01_GHz/eps1_Hz/EJ_over_EC": "qubit_targets.json:design",
+   "f_readout_GHz": "qubit_targets.json:readout_window[Delta_r=7]",
+   "f_drive_GHz": "qubit_targets.json:inputs.f_cav_GHz",
+   "reference_T1/marginality": "qubit_targets.json:quasiparticle"
+  },
+  "numerics": "adaptive QUADPACK, E = Delta cosh(t) substitution",
+  "rng": "unused (no stochastic sampling in P3)",
+  "seed": 0,
+  "claim_discipline": "all T1 values parametric in (x_qp, T_qp); no absolute TBG coherence claim"
+ }
+}

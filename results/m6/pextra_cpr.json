@@ -1,0 +1,772 @@
+{
+  "normalization_check": {
+    "convention": "max_phi sum_m c_m sin(m phi) = 1, so Ic is the TRUE critical current (M3_BRIEF.md Sec. 2, junction/cpr.py:normalize_cpr)",
+    "cpr_model": "Beenakker short junction, T=0.1 K, normalized max=1",
+    "grid_points": 400001,
+    "rows": {
+      "0.5": {
+        "cpr_max": 1.0000000426837194,
+        "abs_dev_from_1": 4.2683719447822455e-08,
+        "argmax_over_pi": 0.55484,
+        "A2": 0.8537608086139364,
+        "A4": 0.5397240566415309,
+        "potential_minima_over_pi": [
+          -1.4135798584282297e-16
+        ]
+      },
+      "0.8": {
+        "cpr_max": 1.0000000002589107,
+        "abs_dev_from_1": 2.5891067068073426e-10,
+        "argmax_over_pi": 0.62623,
+        "A2": 0.7329765634629172,
+        "A4": 0.5502191685370668,
+        "potential_minima_over_pi": [
+          -1.4135798584282297e-16
+        ]
+      },
+      "0.95": {
+        "cpr_max": 1.0000000220338146,
+        "abs_dev_from_1": 2.203381455068154e-08,
+        "argmax_over_pi": 0.75127,
+        "A2": 0.674181734044674,
+        "A4": 2.4559772189630023,
+        "potential_minima_over_pi": [
+          -1.4135798584282297e-16
+        ]
+      }
+    },
+    "sinusoidal": {
+      "cpr_max": 1.0,
+      "argmax_over_pi": 0.49999999999999994,
+      "A2": 1.0,
+      "A4": 1.0
+    },
+    "energy_chain": "U(phi) = -E_J sum_m (c_m/m) cos(m phi), E_J = Phi0 Ic/(2 pi) = hbar Ic/(2e), same Ic as normalizes the c_m; charge basis coupling |n> -> |n+-m| is -E_J c_m/(2m)"
+  },
+  "reference_sinusoidal": {
+    "EJ_GHz": 149.0050531997167,
+    "EC_GHz": 1.490050531997167,
+    "EJ_over_EC": 100.0,
+    "f01_GHz": 40.5966287014581,
+    "anharm_GHz": -1.6323417967519944,
+    "n01": 1.3047875496582915,
+    "eps1_Hz": 37.42631804470875,
+    "N": 35,
+    "eps1_mp_Hz": 37.4279426515616,
+    "eps1_float64_reldev": -4.340625580130518e-05,
+    "cross_check_spectrum_py": {
+      "f01_GHz": 40.5966287014581,
+      "anharm_GHz": -1.6323417967519944,
+      "eps1_Hz": 37.42631804470875,
+      "n01": 1.3047875496582915,
+      "max_abs_matrix_diff": 0.0,
+      "bitwise_identical": true
+    }
+  },
+  "fixed_Ic": {
+    "0.5": {
+      "EJ_GHz": 149.0050531997167,
+      "EC_GHz": 1.490050531997167,
+      "EJ_over_EC": 100.0,
+      "f01_GHz": 37.945491076808494,
+      "anharm_GHz": -1.0713383144777282,
+      "n01": 1.2615303042219776,
+      "eps1_Hz": 57.73932798547321,
+      "N": 35,
+      "eps1_mp_Hz": 57.74056283459599,
+      "eps1_float64_reldev": -2.1386163593841536e-05,
+      "A2": 0.8537608086139364,
+      "A4": 0.5397240566415309,
+      "deltas_vs_sinusoidal_pct": {
+        "f01_GHz": -6.530437894598836,
+        "anharm_GHz": -34.36801553391216,
+        "n01": -3.3152711679110047,
+        "eps1_Hz": 54.274668206738724,
+        "eps1_mp_Hz": 54.271270991666135
+      }
+    },
+    "0.8": {
+      "EJ_GHz": 149.0050531997167,
+      "EC_GHz": 1.490050531997167,
+      "EJ_over_EC": 100.0,
+      "f01_GHz": 35.26207337857237,
+      "anharm_GHz": -0.7160316465075738,
+      "n01": 1.216135942694475,
+      "eps1_Hz": 105.47285000939155,
+      "N": 35,
+      "eps1_mp_Hz": 105.47045121867546,
+      "eps1_float64_reldev": 2.274372289459867e-05,
+      "A2": 0.7329765634629172,
+      "A4": 0.5502191685370668,
+      "deltas_vs_sinusoidal_pct": {
+        "f01_GHz": -13.14038996221904,
+        "anharm_GHz": -56.134698754126056,
+        "n01": -6.794332685580376,
+        "eps1_Hz": 181.81465749154307,
+        "eps1_mp_Hz": 181.7960158819334
+      }
+    },
+    "0.95": {
+      "EJ_GHz": 149.0050531997167,
+      "EC_GHz": 1.490050531997167,
+      "EJ_over_EC": 100.0,
+      "f01_GHz": 32.32097883475383,
+      "anharm_GHz": -0.7731872802741648,
+      "n01": 1.1642994835857432,
+      "eps1_Hz": 319.32101762777165,
+      "N": 35,
+      "eps1_mp_Hz": 319.3157021840317,
+      "eps1_float64_reldev": 1.664635877159711e-05,
+      "A2": 0.674181734044674,
+      "A4": 2.4559772189630023,
+      "deltas_vs_sinusoidal_pct": {
+        "f01_GHz": -20.38506676887442,
+        "anharm_GHz": -52.633248636245206,
+        "n01": -10.767121904967627,
+        "eps1_Hz": 753.1991237992393,
+        "eps1_mp_Hz": 753.1478878139965
+      }
+    }
+  },
+  "retuned": {
+    "0.5": {
+      "EJ_GHz": 169.95044452940743,
+      "EC_GHz": 1.490050531997167,
+      "EJ_over_EC": 114.05683289251733,
+      "f01_GHz": 40.59662870145745,
+      "anharm_GHz": -1.0607733595674986,
+      "n01": 1.3048654825629216,
+      "eps1_Hz": 10.563041996647371,
+      "N": 35,
+      "eps1_mp_Hz": 10.566065420339426,
+      "eps1_float64_reldev": -0.00028614470683046607,
+      "lambda_EJ": 1.1405683289251733,
+      "Ic_required_nA": 342.17049867755196,
+      "f01_residual_GHz": -6.536993168992922e-13,
+      "deltas_vs_sinusoidal_pct": {
+        "f01_GHz": -1.6102305482223784e-12,
+        "anharm_GHz": -35.01524241563825,
+        "n01": 0.005972842448604414,
+        "eps1_Hz": -71.77643287264067,
+        "eps1_mp_Hz": -71.76957996675091
+      }
+    },
+    "0.8": {
+      "EJ_GHz": 196.4714709090568,
+      "EC_GHz": 1.490050531997167,
+      "EJ_over_EC": 131.85557582783395,
+      "f01_GHz": 40.59662870145746,
+      "anharm_GHz": -0.7179854020896812,
+      "n01": 1.3048960671218492,
+      "eps1_Hz": 2.941106913567637,
+      "N": 35,
+      "eps1_mp_Hz": 2.941858190792113,
+      "eps1_float64_reldev": -0.00025537506424594246,
+      "lambda_EJ": 1.3185557582783396,
+      "Ic_required_nA": 395.56672748350184,
+      "f01_residual_GHz": -6.394884621840902e-13,
+      "deltas_vs_sinusoidal_pct": {
+        "f01_GHz": -1.5752255363045005e-12,
+        "anharm_GHz": -56.01500840581818,
+        "n01": 0.008316868411734719,
+        "eps1_Hz": -92.14160765145466,
+        "eps1_mp_Hz": -92.13994149189665
+      }
+    },
+    "0.95": {
+      "EJ_GHz": 232.5106533668745,
+      "EC_GHz": 1.490050531997167,
+      "EJ_over_EC": 156.04212633999217,
+      "f01_GHz": 40.5966287014561,
+      "anharm_GHz": -1.0279273831937559,
+      "n01": 1.3048640589842933,
+      "eps1_Hz": 1.0975043096550507,
+      "N": 35,
+      "eps1_mp_Hz": 1.0980393447858872,
+      "eps1_float64_reldev": -0.0004872640797227023,
+      "lambda_EJ": 1.5604212633999217,
+      "Ic_required_nA": 468.12637901997647,
+      "f01_residual_GHz": -2.0037305148434825e-12,
+      "deltas_vs_sinusoidal_pct": {
+        "f01_GHz": -4.9357066804207685e-12,
+        "anharm_GHz": -37.02744209337113,
+        "n01": 0.005863738201810739,
+        "eps1_Hz": -97.0675600299661,
+        "eps1_mp_Hz": -97.06625780901672
+      }
+    }
+  },
+  "N_convergence": {
+    "0.5": {
+      "35": {
+        "f01_GHz": 37.945491076808494,
+        "anharm_GHz": -1.0713383144777282,
+        "eps1_Hz": 57.73932798547321,
+        "n01": 1.2615303042219776
+      },
+      "45": {
+        "f01_GHz": 37.94549107681162,
+        "anharm_GHz": -1.071338314482965,
+        "eps1_Hz": 57.74370492872549,
+        "n01": 1.261530304221979
+      },
+      "60": {
+        "f01_GHz": 37.94549107680072,
+        "anharm_GHz": -1.0713383144737918,
+        "eps1_Hz": 57.733686276151275,
+        "n01": 1.2615303042219774
+      },
+      "max_abs_dev_35_vs_60": {
+        "f01_GHz": 7.773337529215496e-12,
+        "anharm_GHz": 3.936406756110955e-12,
+        "eps1_Hz": 0.0056417093219351955,
+        "n01": 2.220446049250313e-16
+      },
+      "max_rel_dev_35_vs_60": {
+        "f01_GHz": 2.0485536775583859e-13,
+        "anharm_GHz": 3.6742891604972915e-12,
+        "eps1_Hz": 9.770999280342521e-05,
+        "n01": 1.7601210544202713e-16
+      }
+    },
+    "0.8": {
+      "35": {
+        "f01_GHz": 35.26207337857237,
+        "anharm_GHz": -0.7160316465075738,
+        "eps1_Hz": 105.47285000939155,
+        "n01": 1.216135942694475
+      },
+      "45": {
+        "f01_GHz": 35.26207337856799,
+        "anharm_GHz": -0.7160316465036445,
+        "eps1_Hz": 105.46722251092433,
+        "n01": 1.2161359426944731
+      },
+      "60": {
+        "f01_GHz": 35.26207337857106,
+        "anharm_GHz": -0.7160316465057477,
+        "eps1_Hz": 105.46646933562442,
+        "n01": 1.2161359426944753
+      },
+      "max_abs_dev_35_vs_60": {
+        "f01_GHz": 1.3073986337985843e-12,
+        "anharm_GHz": 1.8260948309034575e-12,
+        "eps1_Hz": 0.0063806737671257,
+        "n01": 4.440892098500626e-16
+      },
+      "max_rel_dev_35_vs_60": {
+        "f01_GHz": 3.707662393423095e-14,
+        "anharm_GHz": 2.5502990542529633e-12,
+        "eps1_Hz": 6.0495888435341885e-05,
+        "n01": 3.6516411879591116e-16
+      }
+    },
+    "0.95": {
+      "35": {
+        "f01_GHz": 32.32097883475383,
+        "anharm_GHz": -0.7731872802741648,
+        "eps1_Hz": 319.32101762777165,
+        "n01": 1.1642994835857432
+      },
+      "45": {
+        "f01_GHz": 32.32097883475434,
+        "anharm_GHz": -0.7731872802747759,
+        "eps1_Hz": 319.31791966144374,
+        "n01": 1.1642994835857436
+      },
+      "60": {
+        "f01_GHz": 32.3209788347574,
+        "anharm_GHz": -0.7731872802743069,
+        "eps1_Hz": 319.3255508904258,
+        "n01": 1.1642994835857439
+      },
+      "max_abs_dev_35_vs_60": {
+        "f01_GHz": 3.566924533515703e-12,
+        "anharm_GHz": 1.4210854715202004e-13,
+        "eps1_Hz": 0.004533262654149439,
+        "n01": 6.661338147750939e-16
+      },
+      "max_rel_dev_35_vs_60": {
+        "f01_GHz": 1.10359421716532e-13,
+        "anharm_GHz": 1.837957643349095e-13,
+        "eps1_Hz": 1.419656835565332e-05,
+        "n01": 5.721327065469212e-16
+      }
+    }
+  },
+  "design_criterion_robustness": {
+    "ladder_tau_nominal": {
+      "25": {
+        "EC_GHz": 5.960202127988668,
+        "f01_GHz": 69.03861900140035,
+        "anharm_GHz": -3.7082538334187802,
+        "eps1_Hz": 40144087.3076524
+      },
+      "50": {
+        "EC_GHz": 2.980101063994334,
+        "f01_GHz": 49.44590860407846,
+        "anharm_GHz": -1.4909495184101829,
+        "eps1_Hz": 204369.72467763326
+      },
+      "100": {
+        "EC_GHz": 1.490050531997167,
+        "f01_GHz": 35.26207337857237,
+        "anharm_GHz": -0.7160316465075738,
+        "eps1_Hz": 105.47285000939155
+      },
+      "150": {
+        "EC_GHz": 0.9933670213314447,
+        "f01_GHz": 28.89838004361549,
+        "anharm_GHz": -0.480660756107703,
+        "eps1_Hz": 0.3044391405637725
+      },
+      "200": {
+        "EC_GHz": 0.7450252659985835,
+        "f01_GHz": 25.082703411426735,
+        "anharm_GHz": -0.36593216197294964,
+        "eps1_Hz": 0.003552713678800501
+      },
+      "300": {
+        "EC_GHz": 0.49668351066572236,
+        "f01_GHz": 20.535432364164947,
+        "anharm_GHz": -0.2517214870623121,
+        "eps1_Hz": 0.0015631940186722204
+      }
+    },
+    "criteria": {
+      "eps1_max_Hz": 10000.0,
+      "anharm_min_GHz": 0.5
+    },
+    "passing_ratios": [
+      100
+    ],
+    "passing_ratios_sinusoidal": [
+      100,
+      150,
+      200,
+      300
+    ],
+    "selected": 100,
+    "selected_sinusoidal": 100,
+    "verdict": "design lock unchanged",
+    "window_note": "the SELECTED ratio is unchanged, but the window of acceptable ratios collapses: the higher harmonics cut |anharmonicity| so every ratio >= 150 now fails the 0.5 GHz criterion."
+  },
+  "sweet_spot": {
+    "nu_apex": -2.4,
+    "dnu_stencil": 0.001,
+    "D2_sinusoidal_GHz": -168.84229756897184,
+    "D2_dome_py_GHz": -168.84229756897184,
+    "D1_apex_sinusoidal_GHz": 0.0,
+    "harmonics_vs_nu": "material.json:nu_table carries cpr_harmonics on all 9 superconducting rows and every one is bit-identical to cpr.harmonics_by_tau['0.8']; the file therefore does NOT resolve tau (or the harmonics) vs nu. Held fixed at the tau=0.8 row across the dome, as the file states.",
+    "rows": {
+      "0.5": {
+        "D2_multi_GHz": -156.03105347850033,
+        "delta_pct": -7.587698269290693,
+        "D1_apex_multi_GHz": 0.0,
+        "D1_off_nu_m2p5_multi_GHz": 15.926196229429479,
+        "D1_off_delta_pct": -7.5867612748812245,
+        "Tphi_apex_gain_factor": 1.0821070152694752,
+        "Tphi_apex_us_dnu1em4": 204.00418960681495,
+        "D2_retuned_GHz": -166.59748888514514,
+        "D2_retuned_delta_pct": -1.3295298134104716
+      },
+      "0.8": {
+        "D2_multi_GHz": -143.90027195076982,
+        "delta_pct": -14.772379893736781,
+        "D1_apex_multi_GHz": 0.0,
+        "D1_off_nu_m2p5_multi_GHz": 14.686844997648052,
+        "D1_off_delta_pct": -14.778212365710205,
+        "Tphi_apex_gain_factor": 1.173328550947666,
+        "Tphi_apex_us_dnu1em4": 221.20172663237818,
+        "D2_retuned_GHz": -165.2501501325787,
+        "D2_retuned_delta_pct": -2.127516320325922
+      },
+      "0.95": {
+        "D2_multi_GHz": -132.39312102086842,
+        "delta_pct": -21.587704664593293,
+        "D1_apex_multi_GHz": 0.0,
+        "D1_off_nu_m2p5_multi_GHz": 13.504682775106858,
+        "D1_off_delta_pct": -21.637818897597697,
+        "Tphi_apex_gain_factor": 1.2753101994049838,
+        "Tphi_apex_us_dnu1em4": 240.42781356715437,
+        "D2_retuned_GHz": -166.52325166433002,
+        "D2_retuned_delta_pct": -1.3734981921188905
+      }
+    }
+  },
+  "harmonic_truncation": {
+    "0.5": {
+      "rows": [
+        {
+          "nH": 5,
+          "A2": 0.8537608086139364,
+          "A4": 0.539724056641532,
+          "cpr_max": 1.0000000426837197,
+          "f01_GHz": 37.945491076806405,
+          "anharm_GHz": -1.0713383144784103,
+          "n01": 1.2615303042219783,
+          "eps1_Hz": 57.734695246836054
+        },
+        {
+          "nH": 6,
+          "A2": 0.8535172783642689,
+          "A4": 0.5318961418680951,
+          "cpr_max": 1.000000016440054,
+          "f01_GHz": 37.94458799755819,
+          "anharm_GHz": -1.0705051463282516,
+          "n01": 1.2615153894891113,
+          "eps1_Hz": 57.762264304983546
+        },
+        {
+          "nH": 8,
+          "A2": 0.8535523119730719,
+          "A4": 0.5333841131044472,
+          "cpr_max": 1.0000000105902827,
+          "f01_GHz": 37.94466322644571,
+          "anharm_GHz": -1.0705732413094395,
+          "n01": 1.2615166320781086,
+          "eps1_Hz": 57.75621048087487
+        },
+        {
+          "nH": 12,
+          "A2": 0.8535533986100774,
+          "A4": 0.5334706863845184,
+          "cpr_max": 1.0000000107811784,
+          "f01_GHz": 37.94466276108585,
+          "anharm_GHz": -1.070573548408035,
+          "n01": 1.2615166243036224,
+          "eps1_Hz": 57.75812894626142
+        },
+        {
+          "nH": 20,
+          "A2": 0.8535533997959993,
+          "A4": 0.5334708748719512,
+          "cpr_max": 1.0000000107813545,
+          "f01_GHz": 37.94466276207896,
+          "anharm_GHz": -1.0705735484039494,
+          "n01": 1.2615166243201612,
+          "eps1_Hz": 57.75854106104816
+        },
+        {
+          "nH": 40,
+          "A2": 0.8535533997960012,
+          "A4": 0.5334708748736424,
+          "cpr_max": 1.0000000107813545,
+          "f01_GHz": 37.944662762077854,
+          "anharm_GHz": -1.0705735484045817,
+          "n01": 1.261516624320159,
+          "eps1_Hz": 57.75258671292249
+        }
+      ],
+      "regen_matches_material_max_abs": 1.1844908734404136e-17,
+      "converged": {
+        "nH": 40,
+        "A2": 0.8535533997960012,
+        "A4": 0.5334708748736424,
+        "cpr_max": 1.0000000107813545,
+        "f01_GHz": 37.944662762077854,
+        "anharm_GHz": -1.0705735484045817,
+        "n01": 1.261516624320159,
+        "eps1_Hz": 57.75258671292249
+      },
+      "material_nH": 5,
+      "material_vs_converged_pct": {
+        "f01_GHz": 0.0021829545194110103,
+        "anharm_GHz": 0.07143517363063481,
+        "n01": 0.0010844012322101715,
+        "eps1_Hz": -0.022957807093888574
+      }
+    },
+    "0.8": {
+      "rows": [
+        {
+          "nH": 5,
+          "A2": 0.7329765634629171,
+          "A4": 0.5502191685370653,
+          "cpr_max": 1.0000000002589107,
+          "f01_GHz": 35.262073378572765,
+          "anharm_GHz": -0.7160316465063303,
+          "n01": 1.2161359426944738,
+          "eps1_Hz": 105.46909834374674
+        },
+        {
+          "nH": 6,
+          "A2": 0.7206970301882265,
+          "A4": 0.14264172739232212,
+          "cpr_max": 1.0000000057495229,
+          "f01_GHz": 35.22462868827739,
+          "anharm_GHz": -0.6753510708006161,
+          "n01": 1.2154935364140664,
+          "eps1_Hz": 107.0106492306877
+        },
+        {
+          "nH": 8,
+          "A2": 0.7230067288540096,
+          "A4": 0.24890840995706412,
+          "cpr_max": 1.0000000000667189,
+          "f01_GHz": 35.21551059565151,
+          "anharm_GHz": -0.6817060113113271,
+          "n01": 1.2153356615176363,
+          "eps1_Hz": 107.80185277781129
+        },
+        {
+          "nH": 12,
+          "A2": 0.7235933051542707,
+          "A4": 0.2872623048364317,
+          "cpr_max": 1.0000000004348122,
+          "f01_GHz": 35.21714472756767,
+          "anharm_GHz": -0.6818210172971746,
+          "n01": 1.2153638522376953,
+          "eps1_Hz": 107.6830500323922
+        },
+        {
+          "nH": 20,
+          "A2": 0.7236067902080758,
+          "A4": 0.289439433184669,
+          "cpr_max": 1.0000000000217488,
+          "f01_GHz": 35.21714453191343,
+          "anharm_GHz": -0.6818210225270747,
+          "n01": 1.2153638488608234,
+          "eps1_Hz": 107.68658853521629
+        },
+        {
+          "nH": 40,
+          "A2": 0.7236067978641794,
+          "A4": 0.28944271914812103,
+          "cpr_max": 1.0000000000217792,
+          "f01_GHz": 35.217144531864804,
+          "anharm_GHz": -0.6818210225266981,
+          "n01": 1.2153638488599823,
+          "eps1_Hz": 107.68587799248053
+        }
+      ],
+      "regen_matches_material_max_abs": 2.7755575615628914e-17,
+      "converged": {
+        "nH": 40,
+        "A2": 0.7236067978641794,
+        "A4": 0.28944271914812103,
+        "cpr_max": 1.0000000000217792,
+        "f01_GHz": 35.217144531864804,
+        "anharm_GHz": -0.6818210225266981,
+        "n01": 1.2153638488599823,
+        "eps1_Hz": 107.68587799248053
+      },
+      "material_nH": 5,
+      "material_vs_converged_pct": {
+        "f01_GHz": 0.1275766315094377,
+        "anharm_GHz": 5.0175372789324815,
+        "n01": 0.06352779336137433,
+        "eps1_Hz": -2.0550772527884376
+      }
+    },
+    "0.95": {
+      "rows": [
+        {
+          "nH": 5,
+          "A2": 0.674181734044674,
+          "A4": 2.4559772189630023,
+          "cpr_max": 1.0000000220338146,
+          "f01_GHz": 32.3209788347515,
+          "anharm_GHz": -0.7731872802722535,
+          "n01": 1.1642994835857445,
+          "eps1_Hz": 319.3185165173418
+        },
+        {
+          "nH": 6,
+          "A2": 0.5626839788454855,
+          "A4": -2.0144031736715595,
+          "cpr_max": 1.000000025313398,
+          "f01_GHz": 32.539378261637154,
+          "anharm_GHz": -0.37007132667774556,
+          "n01": 1.1682621491783727,
+          "eps1_Hz": 248.8238664000164
+        },
+        {
+          "nH": 8,
+          "A2": 0.5911302048638536,
+          "A4": -1.489936121496927,
+          "cpr_max": 1.0000000282990984,
+          "f01_GHz": 32.572911268886486,
+          "anharm_GHz": -0.4589740482658726,
+          "n01": 1.1688596429884246,
+          "eps1_Hz": 247.49299143422832
+        },
+        {
+          "nH": 12,
+          "A2": 0.6073596881511251,
+          "A4": -0.4975060582905917,
+          "cpr_max": 1.0000000269104194,
+          "f01_GHz": 32.51623624327853,
+          "anharm_GHz": -0.4629650841200643,
+          "n01": 1.1678420380646388,
+          "eps1_Hz": 257.48651921730925
+        },
+        {
+          "nH": 20,
+          "A2": 0.6116751576253302,
+          "A4": 0.12020469320928961,
+          "cpr_max": 1.0000000637349062,
+          "f01_GHz": 32.52168459117958,
+          "anharm_GHz": -0.462958157220136,
+          "n01": 1.167939879962601,
+          "eps1_Hz": 256.5184900049644
+        },
+        {
+          "nH": 40,
+          "A2": 0.6118034607631914,
+          "A4": 0.17586968217612728,
+          "cpr_max": 1.0000000115465497,
+          "f01_GHz": 32.52160715759193,
+          "anharm_GHz": -0.46295826433107123,
+          "n01": 1.1679384894608646,
+          "eps1_Hz": 256.53348245668894
+        }
+      ],
+      "regen_matches_material_max_abs": 2.7755575615628914e-17,
+      "converged": {
+        "nH": 40,
+        "A2": 0.6118034607631914,
+        "A4": 0.17586968217612728,
+        "cpr_max": 1.0000000115465497,
+        "f01_GHz": 32.52160715759193,
+        "anharm_GHz": -0.46295826433107123,
+        "n01": 1.1679384894608646,
+        "eps1_Hz": 256.53348245668894
+      },
+      "material_nH": 5,
+      "material_vs_converged_pct": {
+        "f01_GHz": -0.6169077741635046,
+        "anharm_GHz": 67.01014753270336,
+        "n01": -0.3115751307075478,
+        "eps1_Hz": 24.475376301681496
+      }
+    }
+  },
+  "downstream": {
+    "tau": "0.8",
+    "g_scaling": {
+      "law": "g = 2 beta e V_zpf n01 / h  (qubit/coupling.py) -> g ~ n01 exactly",
+      "n01_sinusoidal": 1.3047875496582915,
+      "n01_fixed_Ic": 1.216135942694475,
+      "g_delta_fixed_Ic_pct": -6.794332685580376,
+      "n01_retuned": 1.3048960671218492,
+      "g_delta_retuned_pct": 0.008316868411734719,
+      "note": "V_zpf depends on the CAVITY frequency, not on f01, and beta is pure capacitance, so the g shift is exactly the n01 shift. Under retuning n01 is recovered to 1e-4 relative because n01 ~ sqrt(f01/8E_C) and both are restored.",
+      "chi_note": "chi ~ g^2 alpha /(Delta (Delta+alpha)) also moves through Delta = f_cav - f01 and alpha; not re-derived here, P2 owns the chi budget."
+    },
+    "gate_floor_scaling": {
+      "law": "leakage-limited t_g ~ 1/|anharmonicity| (no re-simulation)",
+      "anharm_sinusoidal_GHz": -1.6323417967519944,
+      "anharm_fixed_Ic_GHz": -0.7160316465075738,
+      "anharm_retuned_GHz": -0.7179854020896812,
+      "t_g_stretch_fixed_Ic": 2.2797062178937204,
+      "t_g_stretch_retuned": 2.273502764820982,
+      "p6_reference_ns": {
+        "gaussian_1e-4_ns": 2.1743133981126386,
+        "drag_1e-4_ns": 1.0111693792084075,
+        "combined_1e-4_ns": 1.6044397958489334
+      },
+      "scaled_fixed_Ic_ns": {
+        "gaussian_1e-4_ns": 4.9567957733270065,
+        "drag_1e-4_ns": 2.30516912112514,
+        "combined_1e-4_ns": 3.657651378832945
+      },
+      "scaled_retuned_ns": {
+        "gaussian_1e-4_ns": 4.943307522196388,
+        "drag_1e-4_ns": 2.2988963793326302,
+        "combined_1e-4_ns": 3.6476983118513617
+      }
+    },
+    "parity_bound": {
+      "law": "T_phi <= 1/(pi eps1)  (qubit/qp_kernel.py:Tphi_parity_frozen)",
+      "eps1_sinusoidal_Hz": 37.4279426515616,
+      "eps1_fixed_Ic_Hz": 105.47045121867546,
+      "eps1_retuned_Hz": 2.941858190792113,
+      "bound_sinusoidal_ms": 8.50460548011206,
+      "bound_fixed_Ic_ms": 3.018000610652817,
+      "bound_retuned_ms": 108.20028211423876,
+      "bound_delta_fixed_Ic_pct": -64.5133378883902,
+      "bound_delta_retuned_pct": 1172.2551606569418,
+      "T1_qp_us_at_x1em6": 5.53707931136494,
+      "bound_over_T1qp_sinusoidal": 1535.9370891900041,
+      "bound_over_T1qp_fixed_Ic": 545.0528050877516,
+      "bound_over_T1qp_retuned": 19541.038881663844,
+      "p3_stated_ratio": 1536.0037613621816,
+      "verdict_ref": "P3's verdict was 'the frozen-parity bound exceeds the qp-limited T1 by >1e3 across the whole x_qp band'; see bound_over_T1qp_* for whether it survives the CPR harmonics."
+    }
+  },
+  "params": {
+    "EJ_GHz": 149.0050531997167,
+    "Ic_nA": 300.0,
+    "EC_GHz": 1.490050531997167,
+    "EJ_over_EC": 100.0,
+    "f01_target_GHz": 40.5966287014581,
+    "N_charge": 35,
+    "N_convergence_max": 60,
+    "mp_dps": 50,
+    "dnu_stencil": 0.001,
+    "taus": [
+      "0.5",
+      "0.8",
+      "0.95"
+    ],
+    "tau_nominal": 0.8,
+    "harmonics_by_tau": {
+      "0.5": [
+        0.9963348076406251,
+        -0.08515457842951535,
+        0.010937200087379608,
+        -0.001562014856186067,
+        0.00023432339898949898
+      ],
+      "0.8": [
+        0.9832251958563236,
+        -0.18418877711398698,
+        0.0522460683813405,
+        -0.016530345167577707,
+        0.00550241947217135
+      ],
+      "0.95": [
+        0.9295831260037717,
+        -0.2778199305357964,
+        0.12800682435969193,
+        -0.06631442718606775,
+        0.03629514095553805
+      ]
+    },
+    "held_fixed_fixed_Ic": "Ic (-> E_J) and C_Sigma (-> E_C)",
+    "held_fixed_retuned": "E_C; E_J scaled by lambda so f01 returns to the design value",
+    "retune_caveat": "lambda > 1 for every tau and E_J(nu) is already MAXIMAL at the dome apex, so the retune is a fabrication knob (larger Ic / wider junction) or a shunt knob (smaller C_Sigma), not a gate knob. Reported to isolate the untunable part of the shift."
+  },
+  "provenance": {
+    "module": "qubit/cpr_transmon.py (M6 deliverable P-extra)",
+    "resolves": "paper/decisions.md 2026-07-27 'M6 flag (deferred): non-sinusoidal CPR vs transmon Hamiltonian'",
+    "deterministic": true,
+    "rng_seed": null,
+    "rng_note": "no stochastic step: exact diagonalisation on fixed grids; bisection on a monotone function",
+    "reads": {
+      "harmonics_by_tau": "material.json:cpr.harmonics_by_tau",
+      "cpr_model": "material.json:cpr.model",
+      "tau_nominal": "material.json:cpr.tau_nominal",
+      "nu_harmonics": "material.json:nu_table[*].cpr_harmonics",
+      "Ic_nA": "junction.json:contract.Ic_nA (via qubit/inputs.py)",
+      "EC_GHz/f01_GHz/EJ_over_EC": "qubit_targets.json:design",
+      "dome": "material.json:sc_dome (via qubit/dome.py)",
+      "t_g_floor_ns": "out/m6/p6_gates.json:gate_floor/combined_floor",
+      "T1_qp": "out/m6/p3_qp.json:parity.rate",
+      "truncation_generator": "m1/cpr.py:beenakker_harmonics -- diagnostic only, its nH=5 output reproduces material.json to 2.8e-17"
+    },
+    "unmodified": [
+      "qubit/spectrum.py",
+      "qubit/inputs.py",
+      "qubit/dome.py",
+      "qubit/cavity.py",
+      "qubit/qp.py",
+      "qubit/coupling.py",
+      "qubit/qp_kernel.py",
+      "m1/cpr.py",
+      "junction/cpr.py"
+    ],
+    "tests": "tests/test_m6_pextra_cpr.py"
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "model": {
+    "topology": "Thevenin near-field pickup: EMF V_oc = E_zpf*d_eff in series with the collection-electrode self-capacitance C_c, driving the qubit island (shunt pad C_s || junction C_J). C_Sigma = C_c + C_s + C_J is LOCKED at the E_J/E_C=100 design value, so C_c spends the budget rather than adding to it. beta = V_junction/(E_zpf*d_eff) = C_c/C_Sigma (Koch et al. PRA 76, 042319 (2007) Sec. III divider).",
+    "coupling_operator": "H_int = 2*beta*e*V_zpf*n_hat  (n_hat counts Cooper pairs)",
+    "reference_operator": "H_int = e*V_zpf*n_hat  (qubit/cavity.py, unpinned)",
+    "charge_factor_verdict": "2e is correct. spectrum.py's charge ladder is the Cooper-pair number, island charge Q = 2e*n_hat, and n01 = |<0|n|1>| is the Cooper-pair matrix element; the -8 E_C n n_g cross term gives exactly 2 e beta V n. The reference's bare e is low by 2x at fixed beta.",
+    "params": {
+      "C_Sigma_fF": 12.999713035702573,
+      "C_J_fF": 1.0,
+      "C_c_budget_cap_fF": 11.999713035702571,
+      "kappa_geo": 2.0,
+      "eps_eff": 6.34,
+      "w_c_um": 10.0,
+      "g_c_um": 0.5,
+      "eps_pp": 11.68,
+      "C_c_selfcap_formula": "C_c = kappa_geo*eps0*eps_eff*d_eff",
+      "C_c_overlap_formula": "C_c = eps0*eps_pp*w_c*L_ov/g_c",
+      "C_c_overlap_fF_at_defaults": 41.3667654614016,
+      "C_c_overlap_saturates_cap": true
+    },
+    "ranges": {
+      "kappa_geo": [
+        1.0,
+        4.0
+      ],
+      "eps_eff": [
+        6.34,
+        11.68
+      ],
+      "w_c_um": [
+        2.0,
+        50.0
+      ],
+      "g_c_um": [
+        0.09999999999999999,
+        2.0
+      ],
+      "note": "kappa_geo and eps_eff are the only parameters that move the default branch; C_c is monotone increasing in both, so the corner values bracket beta."
+    }
+  },
+  "beta": {
+    "drive": 0.17272858432791746,
+    "drive_range": [
+      0.08636429216395873,
+      0.6364258249053868
+    ],
+    "readout_sample": 0.8636429216395874,
+    "readout_sample_range": [
+      0.4318214608197937,
+      0.9230752250258457
+    ],
+    "beta_max": 0.9230752250258457,
+    "beta_breakeven": 0.5,
+    "C_c_breakeven_fF": 6.499856517851287,
+    "definition": "beta = C_c/C_Sigma = V_junction/(E_zpf*d_eff)"
+  },
+  "correction_factor": {
+    "formula": "g_P2/g_ref = 2*beta",
+    "drive": 0.3454571686558349,
+    "drive_range": [
+      0.17272858432791746,
+      1.2728516498107736
+    ],
+    "readout_sample": 1.727285843279175,
+    "readout_sample_range": [
+      0.8636429216395874,
+      1.8461504500516914
+    ],
+    "ceiling": 1.8461504500516914,
+    "scaling": "chi ~ c^2, chi/kappa ~ c^2, T1_Purcell ~ 1/c^2, kappa unchanged"
+  },
+  "drive_cavity_reference": {
+    "E_zpf_V_per_m": 0.08338981309446636,
+    "V_zpf_V": 1.667796261889327e-06,
+    "g_MHz": 526.1834260761443,
+    "Delta_GHz": 104.4033712985419,
+    "chi_kHz": -42.1211480764885,
+    "kappa_MHz": 9.923554411875415,
+    "chi_over_kappa": 0.004244562616201566,
+    "T1_Purcell_us": 631.4043840332611,
+    "g_convention": "g = e*V_zpf*n01/h; lumped-circuit pin = agent task"
+  },
+  "drive_cavity_corrected": {
+    "E_zpf_V_per_m": 0.08338981309446636,
+    "V_zpf_V": 1.667796261889327e-06,
+    "g_MHz": 181.77383656589163,
+    "Delta_GHz": 104.4033712985419,
+    "chi_kHz": -5.026765416625294,
+    "kappa_MHz": 9.923554411875415,
+    "chi_over_kappa": 0.000506548884400716,
+    "T1_Purcell_us": 5290.773559483864,
+    "g_convention": "g = e*V_zpf*n01/h; lumped-circuit pin = agent task",
+    "beta": 0.17272858432791746,
+    "correction_factor": 0.3454571686558349,
+    "g_ref_MHz": 526.1834260761443,
+    "C_c_fF": 2.24542202932608,
+    "d_eff_um": 20.0,
+    "beta_range": [
+      0.08636429216395873,
+      0.6364258249053868
+    ],
+    "correction_range": [
+      0.17272858432791746,
+      1.2728516498107736
+    ],
+    "g_MHz_range": [
+      90.88691828294581,
+      669.7534419841055
+    ],
+    "g_MHz_from_operator": 181.77383656589163,
+    "chi_kHz_from_formula": -5.0267654166252935
+  },
+  "readout_sample_reference": {
+    "Delta_r_GHz": 7.0,
+    "f_r_GHz": 47.5966287014581,
+    "d_eff_um": 100.0,
+    "kappa_MHz": 1.0,
+    "g_MHz": 283.4807343942439,
+    "chi_MHz": -3.491204638874969,
+    "chi_over_kappa": 3.4912046388749687,
+    "T1_Purcell_us": 97.04409477410708
+  },
+  "readout_sample_corrected": {
+    "Delta_r_GHz": 7.0,
+    "f_r_GHz": 47.5966287014581,
+    "d_eff_um": 100.0,
+    "kappa_MHz": 1.0,
+    "g_MHz": 489.65225936156133,
+    "chi_MHz": -10.416066241351096,
+    "chi_over_kappa": 10.416066241351096,
+    "T1_Purcell_us": 32.5267510786143,
+    "beta": 0.8636429216395874,
+    "correction_factor": 1.727285843279175,
+    "g_ref_MHz": 283.4807343942439,
+    "C_c_fF": 11.2271101466304,
+    "beta_range": [
+      0.4318214608197937,
+      0.9230752250258457
+    ],
+    "correction_range": [
+      0.8636429216395874,
+      1.8461504500516914
+    ],
+    "g_MHz_range": [
+      244.82612968078067,
+      523.3480853829174
+    ],
+    "chi_MHz_from_formula": -10.416066241351096,
+    "g_over_Delta_sq": 0.004893047655058811
+  },
+  "two_cavity_budget": {
+    "C_c_drive_fF_unconstrained": 2.24542202932608,
+    "C_c_readout_fF_unconstrained": 11.2271101466304,
+    "budget_cap_fF": 11.999713035702571,
+    "oversubscription": 1.122737863469889,
+    "scale_applied": 0.8906798572815918,
+    "kappa_geo_effective": 1.7813597145631836,
+    "C_c_drive_fF": 1.999952172617095,
+    "C_c_readout_fF": 9.999760863085477,
+    "beta_drive": 0.15384587083764092,
+    "beta_readout": 0.7692293541882048,
+    "correction_drive": 0.30769174167528185,
+    "correction_readout": 1.5384587083764096
+  },
+  "provenance": {
+    "module": "qubit/coupling.py (M6 deliverable P2)",
+    "deterministic": true,
+    "rng_seed": null,
+    "rng_note": "no stochastic step: closed-form lumped-circuit algebra",
+    "reads": {
+      "C_Sigma_fF": "qubit_targets.json:design.C_fF",
+      "C_J_fF": "junction.json:contract.C_fF",
+      "eps_core": "photonics.json:geometry.eps_core",
+      "a_um": "photonics.json:geometry.a_um",
+      "V_mode_m3": "qubit_targets.json:inputs.V_mode_m3",
+      "d_eff_drive_um": "qubit_targets.json:inputs.d_eff_drive_um",
+      "f_cav_GHz": "qubit_targets.json:inputs.f_cav_GHz",
+      "Q_i": "qubit_targets.json:inputs.Q_i",
+      "n01": "recomputed by qubit.design_point() (spectrum.n01_element)",
+      "reference_rows": "qubit/cavity.py (AT-4 / AT-5 path, unmodified)",
+      "d_eff_engineering": "out/qj_closure.json:requirement.d_eff_min_10x_um = 21.59 um, d_eff_min_90pct_um = 25.24 um"
+    },
+    "unmodified": [
+      "qubit/cavity.py",
+      "qubit/inputs.py",
+      "qubit/spectrum.py",
+      "qubit/dome.py",
+      "qubit/qp.py"
+    ],
+    "citation": "Koch et al., 'Charge-insensitive qubit design derived from the Cooper pair box', PRA 76, 042319 (2007), Sec. III: h g = 2 e beta V_rms^0 <0|n|1>, beta = C_g/C_Sigma."
+  }
+}

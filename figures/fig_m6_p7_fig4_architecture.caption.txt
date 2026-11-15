@@ -1,0 +1,97 @@
+Figure 4 (paper 2) -- two-cavity architecture, kappa_r envelope, readout efficiency.
+
+(a) Schematic of concept C, the nested/concentric two-cavity chip -- the ONLY
+surviving concept out of three considered (side-by-side and shared-seam are
+REJECTED), src: out/m6/p5_two_cavity.json:geometry.concepts. Numbers shown:
+readout chip footprint 34.09 x 34.09 mm (src:
+geometry.length_scales_um.chip_footprint_readout_mm); drive patch (its L3
+defect plus its 8 measured outer mirror rows) spans 9.89 mm
+against a 6.82 mm readout L3 defect (src:
+geometry.concepts[2].drive_patch_span_um / .readout_defect_span_um) -- the
+drive patch OVERRUNS the readout defect by 0.78 readout mirror rows per side
+(src: geometry.concepts[2].readout_mirror_rows_consumed_per_side); a_r =
+2272.4 um is the Maxwell-rescaled readout lattice constant at the
+recommended f_r (src: geometry.maxwell_scaling.a_r_um). Collection-electrode
+lengths: drive d_eff = 20 um, readout d_eff =
+60.0 um (src: params.d_eff_drive_um,
+recommended_point.d_eff_um). The three squares (outer footprint, readout
+defect, drive patch) are drawn to the TRUE relative scale of their printed
+spans; the island and its two collection-electrode stubs are schematic only
+(not to scale -- both d_eff are microns against a millimetre-scale patch) and
+exist to show topology (electrodes reach the common centre), not geometry.
+Verdict quoted
+verbatim from the artifact: "VIABLE, CONDITIONAL" -- no FDTD/MPB run has been
+performed at a_r (out of P5 scope).
+
+(b) The kappa_r operating window vs f_r, REDRAWN for the corrected dispersive
+shift (out/verify/chi_convention_ruling.md; the production chi is now
+qubit/cavity.py:chi_dispersive_koch with Delta = f01 - f_r). C2 floor (blue):
+the measured, scale-invariant internal-Q linewidth kappa_r >= f_r/Q_i, src:
+gap_window_scan.envelope.rows[*].kappa_intrinsic_MHz inside the gap-protection
+window and above_f01_emptiness_proof.ceiling_table_MHz[*].kappa_int above f01
+(Q_i = 14611.7). C3 ceiling (red): the CORRECTED analytic bound
+kappa_r^2 <= |alpha|*|Delta|/(|Delta+alpha|*2*pi*T1_min), Delta = f01 - f_r,
+src: gap_window_scan.envelope.rows[*].kappa_ceiling_koch_MHz and
+above_f01_emptiness_proof.ceiling_table_MHz[*].koch. Orange dashed:
+kappa_max, the largest kappa admitting ANY g once the 1.2x Purcell margin,
+(g/Delta)^2 <= 0.01, C7 ((g12/Delta_12)^2 <= 0.01) and C8 (the exact two-pole
+chi/kappa >= 1) are all imposed, src:
+gap_window_scan.envelope.rows[*].kappa_max_MHz. Shaded green: the allowed
+band, i.e. where kappa_max > kappa_int; it splits into
+2 lobes
+separated by the 1-2 line f12 = 38.9643 GHz, which C7 empties (src:
+envelope.feasible_f_r_bands_GHz). Grey band, 44.60-56.60
+GHz: the mandated Delta_r = 4-16 GHz reference-convention window, which is
+EMPTY under the corrected chi -- the C3 ceiling saturates at
+2.9428 MHz while kappa_int is already
+3.0521 MHz at its smallest
+detuning, and a 0.01 GHz sweep over all Delta_r > 0 gives
+max(ceiling - kappa_int) =
+-0.5647 MHz (src:
+above_f01_emptiness_proof). Grey X: the SUPERSEDED recommended point, f_r =
+44.5966 GHz, kappa_r = 3.450 MHz, whose
+corrected chi/kappa is only
+0.4242
+(Koch) / 0.4664
+(two-pole) -- it fails. Gold star: the corrected recommended point, f_r =
+37.4389 GHz, kappa_r = 3.700 MHz, d_eff =
+60.0 um, eta = 0.3075 (src:
+recommended_point).
+
+(c) Readout port efficiency eta = 1 - kappa_int/kappa_ceiling vs the
+symmetric margin m (m_chi = m_T1 = m along this front), src:
+out/m6/p5_two_cavity.json:recommended_point.margin_efficiency_front. The
+identity m_chi*m_T1 = (kappa_ceiling/kappa)^2 is unchanged by the convention
+correction; only the value of kappa_ceiling moves. Solid: nominal Q_i,
+eta(m) = 1 - m/R with R = 1.6525 = the largest symmetric margin
+reachable anywhere (eta = 0 there), src:
+recommended_point.margin_efficiency_front.R_max_symmetric_margin. Circles:
+the 6 tabulated front points (m = 1.00-1.25). Dashed: the optimistic-Q_i
+variant, R = 2.0831 (derived from
+operating_envelope.constraints[1].kappa_int_MHz_optimistic =
+2.0326 MHz and recommended_point.kappa_ceiling_MHz =
+4.2340 MHz, both src: out/m6/p5_two_cavity.json). Dotted
+grey: the SUPERSEDED reference-convention front, R = 1.2532 -- the
+"largest symmetric margin available anywhere is 1.2532" reading is withdrawn.
+Green dash-dot: the exact eta ceiling anywhere in the gap-protection window,
+0.3115 at f_r =
+37.489 GHz (src:
+gap_window_scan.envelope). Gold star: the recommended point at its own
+(m, eta) = (1.1443, 0.3075) (m computed as
+kappa_ceiling_MHz/kappa_MHz at that point; it does not sit exactly on the
+symmetric front because the recommended point was chosen by the
+T1-margin-target objective, not the symmetric-margin objective -- src:
+recommended_point.objective). Red circle: the optimum reached if the C8
+two-pole screen is dropped, eta = 0.3413 but with an
+exact two-pole chi/kappa of only
+0.9315 < 1 -- NOT recommended (src:
+gap_window_scan.koch_only_optimum).
+
+CONVENTION NOTE. Panels (b) and (c) are drawn from the corrected chi. Panel
+(a) is convention-independent (pure geometry), but its a_r follows the
+recommended f_r and therefore moved from 1907.71 um to 2272.43 um.
+
+src: out/m6/p5_two_cavity.json (geometry, gap_window_scan,
+above_f01_emptiness_proof, reference_convention_scan, recommended_point,
+operating_envelope.constraints, params). Deterministic; no RNG (rng_seed=0,
+closed-form algebra + deterministic grid sweeps per provenance.rng_note).

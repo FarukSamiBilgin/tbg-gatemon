@@ -1,0 +1,1052 @@
+{
+ "_meta": {
+  "title": "Junction-level ABS physics: 2 E_A(phi) pair-breaking audit of the 145 GHz drive + ABS-weighted quasiparticle matrix elements",
+  "module": "M6 exploration (paper 2), item 1/5",
+  "status": "EXPLORATION -- not a contract change; nothing in qubit/ moved"
+ },
+ "part_A_threshold_weight": {
+  "verdict": {
+   "headline": "THE 1.370% BULK MARGIN IS NOT A JUNCTION MARGIN. At the measured tau = 0.80 the Andreev pair-transition energy 2 E_A(phi) drops below h * 145 GHz for |phi| > 0.371293 rad, which is only 0.969 sigma_phi of the E_J/E_C = 100 ground state (sigma_phi = 0.383139 rad). The ground-state phase weight already sitting above the junction threshold AT THE DOME APEX is W = 0.3309 (cosine basis) to 0.3656 (exact-CPR eigenbasis) -- a third of the wavefunction, not a 1.4% margin.",
+   "window_verdict": "the ABS-corrected sub-threshold filling window is EMPTY at every audit threshold {1e-3, 1e-2, 0.1}: W(apex) = 0.3309 exceeds all three. The stored bulk window |nu+2.4| < 0.058571 is the region where W rises from 0.3309 to 1, not a region where the drive is safe.",
+   "safe_drive_rule": "ABS-corrected safe-drive rule (replaces the bulk margin 2 Delta/h f_d = 1.0139): to hold W(apex) < 1e-3 the drive plane must sit at f_d <= 124.381 GHz (cosine) / 121.506 GHz (exact CPR), i.e. 15.40-17.35% below 2 Delta/h -- margin 1.182-1.210, not 1.014.",
+   "scope": "DRIVE-PLANE ONLY, exactly as the bulk audit found. The control (40.597 GHz) and readout (44.597 / 47.597 GHz) tones do not open the ABS channel at all for tau <= 0.8 (they need tau >= 0.924 / 0.908 / 0.895); at tau = 0.95 their W is 1.7e-11 / 5.4e-11 / 1.2e-10, at the charge-basis tail floor. The C5 fork's STRUCTURE survives; its NUMBER does not.",
+   "fork_consequence": "qubit.json:allocation.fixed_drive already reads 'EXACTLY 1 CHANNEL'. The ABS audit does not add a channel -- it removes the last one: at 145 GHz there is no ABS-quiet filling at all, so the fixed-drive scenario is not 'one clean qubit', it is 'one qubit with an open, unbounded junction-level pair-breaking channel'. The tracking-drive scenario is unaffected only if each per-qubit tone also respects f_d < f_safe(tau, nu), which is a STRICTER constraint than h f_d < 2 Delta(nu).",
+   "claim_limit": "W is a WEIGHT, not a rate. It says the channel is open and how much ground-state phase density is on the open side; it does not say how fast. See parametric_rate for the free-gamma_0 break-even map, and note that this audit is the ABS analogue of the already-flagged qubit.json:open_items.photon_assisted_pair_breaking -- same register, different mechanism."
+  },
+  "question": "is the 1.370% bulk margin of the 145 GHz drive an artifact of the BULK gap? 2 E_A(phi) = 2 Delta sqrt(1 - tau sin^2(phi/2)) is the junction's own pair-transition energy",
+  "definition": {
+   "E_A": "E_A(phi, nu) = Delta(nu) sqrt(1 - tau sin^2(phi/2))",
+   "W": "W(tau, nu, f_d) = int dphi |psi0(phi)|^2 [2 E_A(phi,nu) < h f_d]",
+   "interpretation": "ground-state phase weight sitting where the drive photon is ABOVE the local Andreev pair-transition energy; a threshold+weight audit, NOT a rate",
+   "gap_convention_primary": "dome (reproduces the stored bulk window)"
+  },
+  "regression_check": {
+   "sin_half_01_sq_here": 0.03534753928134748,
+   "cos_half_00_sq_here": 0.9639707071863671,
+   "sin_half_01_sq_stored": 0.03534753928134744,
+   "cos_half_00_sq_stored": 0.9639707071863669,
+   "sin_half_01_sq_package": 0.03534753928134744,
+   "cos_half_00_sq_package": 0.9639707071863669,
+   "digits_sin": 15.00809893428939,
+   "digits_cos": 15.637623611437519,
+   "digits_sin_vs_p3": 15.00809893428939,
+   "source": "qubit.json:budgets.T1_stack.qp_full_kernel.matrix_elements",
+   "note": "the phase-grid path is used here; qubit.json also stores the charge-basis Toeplitz path -- the two differ in the 16th digit (4e-17 absolute) in the package's own export"
+  },
+  "bulk_reference": {
+   "two_Delta_over_h_GHz": 147.01374591876302,
+   "two_Delta_over_h_GHz_dome": 147.0174226754925,
+   "f_drive_GHz": 145.0,
+   "margin_2Delta_over_hf": 1.0138879028880208,
+   "pct_below_threshold": 1.3697670963882413,
+   "nu_window_halfwidth_recomputed": 0.05857106400995393,
+   "nu_window_halfwidth_stored": 0.05857106400995393,
+   "nu_window_halfwidth_reldev": 0.0,
+   "src": "qubit.json:allocation.fixed_drive + qubit/qp_kernel.py"
+  },
+  "sigma_phi_harmonic_rad": 0.3760603093086394,
+  "sigma_phi_cosine_basis_rad": 0.38313898760965,
+  "rows_by_tau": {
+   "0.5": {
+    "tau": 0.5,
+    "phi_threshold_rad": 0.4713094080686221,
+    "phi_threshold_rad_pinned_gap": 0.47088058644295816,
+    "phi_threshold_over_sigma_harmonic": 1.253281445561462,
+    "E_A_at_phi0_over_Delta": 1.0,
+    "E_A_at_pi_over_Delta": 0.7071067811865476,
+    "tau_min_channel_open": 0.02725637222758104,
+    "cosine": {
+     "sigma_phi_rad": 0.38313898760965,
+     "phi_threshold_over_sigma": 1.2301264640517398,
+     "W_apex": 0.21753191098569158,
+     "W_apex_grid_sum": 0.21789837334056766,
+     "W_apex_pinned_gap": 0.21794853267455516,
+     "nu_at_W": {
+      "1e-03": null,
+      "1e-02": null,
+      "1e-01": null
+     },
+     "f_safe_GHz": {
+      "1e-03": 133.32075653841488,
+      "1e-02": 138.43075505301314,
+      "1e-01": 143.44751943174197
+     },
+     "f_safe_margin": {
+      "1e-03": 1.1027071082993942,
+      "1e-02": 1.0620020519462092,
+      "1e-01": 1.0248608445872638
+     },
+     "f_safe_pct_below_2Delta": {
+      "1e-03": 9.314087805037374,
+      "1e-02": 5.838223366196438,
+      "1e-01": 2.4257775793235625
+     },
+     "nu_at_W_supplementary": {
+      "0.50": 0.04908338381151012,
+      "0.90": 0.05826825502560595
+     },
+     "nu_window_verdict": "EMPTY at W < {1e-03, 1e-02, 1e-01}: W already equals 0.217532 AT THE APEX, so no filling inside the stored bulk window |nu+2.4| < 0.058571 meets any of the three audit thresholds. W rises monotonically to 1 at the bulk edge."
+    },
+    "exact_cpr": {
+     "sigma_phi_rad": 0.3963109006361119,
+     "phi_threshold_over_sigma": 1.1892415962117906,
+     "W_apex": 0.23349480798120836,
+     "W_apex_grid_sum": 0.23386787330444975,
+     "W_apex_pinned_gap": 0.23391892783837964,
+     "nu_at_W": {
+      "1e-03": null,
+      "1e-02": null,
+      "1e-01": null
+     },
+     "f_safe_GHz": {
+      "1e-03": 132.5584987566164,
+      "1e-02": 137.8957494417348,
+      "1e-01": 143.20242091647864
+     },
+     "f_safe_margin": {
+      "1e-03": 1.109048060273277,
+      "1e-02": 1.0661223896598846,
+      "1e-01": 1.0266149481125553
+     },
+     "f_safe_pct_below_2Delta": {
+      "1e-03": 9.832582029529624,
+      "1e-02": 6.202138732024853,
+      "1e-01": 2.592495673425288
+     },
+     "nu_at_W_supplementary": {
+      "0.50": 0.04832153054361665,
+      "0.90": 0.05824606900826801
+     },
+     "nu_window_verdict": "EMPTY at W < {1e-03, 1e-02, 1e-01}: W already equals 0.233495 AT THE APEX, so no filling inside the stored bulk window |nu+2.4| < 0.058571 meets any of the three audit thresholds. W rises monotonically to 1 at the bulk edge."
+    },
+    "W_apex_band": [
+     0.21753191098569158,
+     0.23349480798120836
+    ],
+    "W_apex_basis_spread_pct": 7.338186348469478
+   },
+   "0.8": {
+    "tau": 0.8,
+    "phi_threshold_rad": 0.37129280209659027,
+    "phi_threshold_rad_pinned_gap": 0.3709573919911148,
+    "phi_threshold_over_sigma_harmonic": 0.9873224929777518,
+    "E_A_at_phi0_over_Delta": 1.0,
+    "E_A_at_pi_over_Delta": 0.44721359549995787,
+    "tau_min_channel_open": 0.02725637222758104,
+    "cosine": {
+     "sigma_phi_rad": 0.38313898760965,
+     "phi_threshold_over_sigma": 0.9690812318867198,
+     "W_apex": 0.3308869140165924,
+     "W_apex_grid_sum": 0.33097702293102116,
+     "W_apex_pinned_gap": 0.33132276665328897,
+     "nu_at_W": {
+      "1e-03": null,
+      "1e-02": null,
+      "1e-01": null
+     },
+     "f_safe_GHz": {
+      "1e-03": 124.38088702157499,
+      "1e-02": 133.01294962968484,
+      "1e-01": 141.26228013063266
+     },
+     "f_safe_margin": {
+      "1e-03": 1.1819641219736772,
+      "1e-02": 1.1052588964311907,
+      "1e-01": 1.0407148021595833
+     },
+     "f_safe_pct_below_2Delta": {
+      "1e-03": 15.395063064167147,
+      "1e-02": 9.523460681571061,
+      "1e-01": 3.9121959325548405
+     },
+     "nu_at_W_supplementary": {
+      "0.50": 0.042310960642536255,
+      "0.90": 0.05808574897982055
+     },
+     "nu_window_verdict": "EMPTY at W < {1e-03, 1e-02, 1e-01}: W already equals 0.330887 AT THE APEX, so no filling inside the stored bulk window |nu+2.4| < 0.058571 meets any of the three audit thresholds. W rises monotonically to 1 at the bulk edge."
+    },
+    "exact_cpr": {
+     "sigma_phi_rad": 0.41112047883688085,
+     "phi_threshold_over_sigma": 0.9031240748381866,
+     "W_apex": 0.3655736889589477,
+     "W_apex_grid_sum": 0.3656631743902195,
+     "W_apex_pinned_gap": 0.36600643374510866,
+     "nu_at_W": {
+      "1e-03": null,
+      "1e-02": null,
+      "1e-01": null
+     },
+     "f_safe_GHz": {
+      "1e-03": 121.50609752367437,
+      "1e-02": 131.06771367414825,
+      "1e-01": 140.40063494111973
+     },
+     "f_safe_margin": {
+      "1e-03": 1.209928957599175,
+      "1e-02": 1.1216625498195438,
+      "1e-01": 1.0471017170286776
+     },
+     "f_safe_pct_below_2Delta": {
+      "1e-03": 17.350519324351943,
+      "1e-02": 10.846626718447293,
+      "1e-01": 4.498294316844065
+     },
+     "nu_at_W_supplementary": {
+      "0.50": 0.03915592276144508,
+      "0.90": 0.0580093792093086
+     },
+     "nu_window_verdict": "EMPTY at W < {1e-03, 1e-02, 1e-01}: W already equals 0.365574 AT THE APEX, so no filling inside the stored bulk window |nu+2.4| < 0.058571 meets any of the three audit thresholds. W rises monotonically to 1 at the bulk edge."
+    },
+    "W_apex_band": [
+     0.3308869140165924,
+     0.3655736889589477
+    ],
+    "W_apex_basis_spread_pct": 10.482969701429745
+   },
+   "0.95": {
+    "tau": 0.95,
+    "phi_threshold_rad": 0.34040908005322223,
+    "phi_threshold_rad_pinned_gap": 0.34010213937847483,
+    "phi_threshold_over_sigma_harmonic": 0.905198106864935,
+    "E_A_at_phi0_over_Delta": 1.0,
+    "E_A_at_pi_over_Delta": 0.22360679774997907,
+    "tau_min_channel_open": 0.02725637222758104,
+    "cosine": {
+     "sigma_phi_rad": 0.38313898760965,
+     "phi_threshold_over_sigma": 0.8884741335696125,
+     "W_apex": 0.3725726535402598,
+     "W_apex_grid_sum": 0.37238390905373986,
+     "W_apex_pinned_gap": 0.3730028894869629,
+     "nu_at_W": {
+      "1e-03": null,
+      "1e-02": null,
+      "1e-01": null
+     },
+     "f_safe_GHz": {
+      "1e-03": 119.66075180452057,
+      "1e-02": 130.21954608087816,
+      "1e-01": 140.1568844759258
+     },
+     "f_safe_margin": {
+      "1e-03": 1.2285878510852637,
+      "1e-02": 1.1289683487873174,
+      "1e-01": 1.048922758724813
+     },
+     "f_safe_pct_below_2Delta": {
+      "1e-03": 18.605739173095547,
+      "1e-02": 11.423557527175054,
+      "1e-01": 4.664095455826411
+     },
+     "nu_at_W_supplementary": {
+      "0.50": 0.03845765076996832,
+      "0.90": 0.05799426284175713
+     },
+     "nu_window_verdict": "EMPTY at W < {1e-03, 1e-02, 1e-01}: W already equals 0.372573 AT THE APEX, so no filling inside the stored bulk window |nu+2.4| < 0.058571 meets any of the three audit thresholds. W rises monotonically to 1 at the bulk edge."
+    },
+    "exact_cpr": {
+     "sigma_phi_rad": 0.42941457227814595,
+     "phi_threshold_over_sigma": 0.7927282910947141,
+     "W_apex": 0.4264854009263045,
+     "W_apex_grid_sum": 0.4263028489410387,
+     "W_apex_pinned_gap": 0.4269015212996783,
+     "nu_at_W": {
+      "1e-03": null,
+      "1e-02": null,
+      "1e-01": null
+     },
+     "f_safe_GHz": {
+      "1e-03": 113.46266281222911,
+      "1e-02": 126.13996957971543,
+      "1e-01": 138.40763534183475
+     },
+     "f_safe_margin": {
+      "1e-03": 1.2957015310142865,
+      "1e-02": 1.1654810636834363,
+      "1e-01": 1.0621794495345085
+     },
+     "f_safe_pct_below_2Delta": {
+      "1e-03": 22.8217320066612,
+      "1e-02": 14.198520151021821,
+      "1e-01": 5.8539495903218715
+     },
+     "nu_at_W_supplementary": {
+      "0.50": 0.03117886791943425,
+      "0.90": 0.057845128189589534
+     },
+     "nu_window_verdict": "EMPTY at W < {1e-03, 1e-02, 1e-01}: W already equals 0.426485 AT THE APEX, so no filling inside the stored bulk window |nu+2.4| < 0.058571 meets any of the three audit thresholds. W rises monotonically to 1 at the bulk edge."
+    },
+    "W_apex_band": [
+     0.3725726535402598,
+     0.4264854009263045
+    ],
+    "W_apex_basis_spread_pct": 14.470398423973151
+   }
+  },
+  "W_vs_nu_at_tau_nominal": {
+   "nu_offset": [
+    0.0,
+    0.005,
+    0.01,
+    0.02,
+    0.03,
+    0.04,
+    0.05,
+    0.05857106400995393,
+    0.08,
+    0.1
+   ],
+   "f_2Delta_of_nu_GHz": [
+    147.0174226754925,
+    147.00272087255922,
+    146.95861546352222,
+    146.78219382380115,
+    146.48815774477683,
+    146.07650720678373,
+    145.54724218140518,
+    144.99999999999997,
+    143.25375974338675,
+    141.13669798712462
+   ],
+   "cosine_W": [
+    0.3308869140165924,
+    0.33263398677568157,
+    0.33795098185920924,
+    0.3604375287142193,
+    0.4029127695133412,
+    0.4762890427975157,
+    0.6109880900607396,
+    1.0000000000000004,
+    1.0000000000000004,
+    1.0000000000000004
+   ],
+   "exact_cpr_W": [
+    0.3655736889589477,
+    0.367308056625298,
+    0.3725815044067303,
+    0.39480444597129627,
+    0.4364628202621865,
+    0.5076018150177402,
+    0.6361616890343329,
+    1.0000000000000009,
+    1.0000000000000009,
+    1.0000000000000009
+   ]
+  },
+  "tau_trend": {
+   "tau": [
+    0.01,
+    0.02,
+    0.0272,
+    0.03,
+    0.05,
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9,
+    0.95,
+    0.99
+   ],
+   "W_apex_cosine": [
+    0.0,
+    0.0,
+    0.0,
+    6.648618322557809e-10,
+    2.368524347939882e-05,
+    0.004461700775331479,
+    0.04872158236608359,
+    0.10970806635505892,
+    0.16724936875081398,
+    0.21753191098569158,
+    0.2608564333960677,
+    0.2982913492664978,
+    0.3308869140165924,
+    0.3595187385481404,
+    0.3725726535402598,
+    0.3824788492132287
+   ],
+   "phi_threshold_rad": [
+    NaN,
+    NaN,
+    NaN,
+    2.5271440955519875,
+    1.6611742024897898,
+    1.0985672245335802,
+    0.7562180639229756,
+    0.6123650756994453,
+    0.528195026419824,
+    0.4713094080686221,
+    0.4295687854679185,
+    0.3972597174174228,
+    0.37129280209659027,
+    0.34983206559964614,
+    0.34040908005322223,
+    0.3333954453715478
+   ],
+   "monotone_nondecreasing": true,
+   "tau_min_channel_open": 0.02725637222758104
+  },
+  "tones": {
+   "control_f01": {
+    "f_GHz": 40.5966287014581,
+    "hf_over_2Delta": 0.2761417202707767,
+    "rows": {
+     "0.5": {
+      "channel_open": false,
+      "phi_threshold_rad": null,
+      "W_apex_cosine": 0.0,
+      "tau_min_channel_open": 0.9237495643611944
+     },
+     "0.8": {
+      "channel_open": false,
+      "phi_threshold_rad": null,
+      "W_apex_cosine": 0.0,
+      "tau_min_channel_open": 0.9237495643611944
+     },
+     "0.95": {
+      "channel_open": true,
+      "phi_threshold_rad": 2.8075844737884514,
+      "W_apex_cosine": 1.6866841257012766e-11,
+      "tau_min_channel_open": 0.9237495643611944
+     }
+    }
+   },
+   "readout_recommended": {
+    "f_GHz": 44.5966287014581,
+    "hf_over_2Delta": 0.3033500603821179,
+    "rows": {
+     "0.5": {
+      "channel_open": false,
+      "phi_threshold_rad": null,
+      "W_apex_cosine": 0.0,
+      "tau_min_channel_open": 0.9079833435254537
+     },
+     "0.8": {
+      "channel_open": false,
+      "phi_threshold_rad": null,
+      "W_apex_cosine": 0.0,
+      "tau_min_channel_open": 0.9079833435254537
+     },
+     "0.95": {
+      "channel_open": true,
+      "phi_threshold_rad": 2.7178194504721223,
+      "W_apex_cosine": 5.366351807367664e-11,
+      "tau_min_channel_open": 0.9079833435254537
+     }
+    }
+   },
+   "readout_sample_47p6": {
+    "f_GHz": 47.5966287014581,
+    "hf_over_2Delta": 0.3237563154656238,
+    "rows": {
+     "0.5": {
+      "channel_open": false,
+      "phi_threshold_rad": null,
+      "W_apex_cosine": 0.0,
+      "tau_min_channel_open": 0.8951870909220384
+     },
+     "0.8": {
+      "channel_open": false,
+      "phi_threshold_rad": null,
+      "W_apex_cosine": 0.0,
+      "tau_min_channel_open": 0.8951870909220384
+     },
+     "0.95": {
+      "channel_open": true,
+      "phi_threshold_rad": 2.656441354196586,
+      "W_apex_cosine": 1.2036660557157575e-10,
+      "tau_min_channel_open": 0.8951870909220384
+     }
+    }
+   },
+   "drive_cavity_145": {
+    "f_GHz": 145.0,
+    "hf_over_2Delta": 0.9863023290361176,
+    "rows": {
+     "0.5": {
+      "channel_open": true,
+      "phi_threshold_rad": 0.4713094080686221,
+      "W_apex_cosine": 0.21753191098569158,
+      "tau_min_channel_open": 0.02725637222758104
+     },
+     "0.8": {
+      "channel_open": true,
+      "phi_threshold_rad": 0.37129280209659027,
+      "W_apex_cosine": 0.3308869140165924,
+      "tau_min_channel_open": 0.02725637222758104
+     },
+     "0.95": {
+      "channel_open": true,
+      "phi_threshold_rad": 0.34040908005322223,
+      "W_apex_cosine": 0.3725726535402598,
+      "tau_min_channel_open": 0.02725637222758104
+     }
+    }
+   }
+  },
+  "parametric_rate": {
+   "law": "Gamma_ABS = W(tau, nu, f_d) * n_drive * gamma_0",
+   "free_parameter": {
+    "name": "gamma_0",
+    "meaning": "per-drive-photon, per-unit-sub-threshold-weight ABS pair-breaking vertex rate, s^-1",
+    "status": "FREE -- not computed here; this block is a break-even map"
+   },
+   "n_drive_range": [
+    0.0012376269477716313,
+    0.030940673694290783
+   ],
+   "n_drive_src": "qubit.json:two_cavity.control_line.rabi_budget[*].n_drive (10 and 50 MHz Rabi)",
+   "n_drive_caveat": "that budget is the 44.6 GHz READOUT-port control line; the intracavity photon number of the 145 GHz drive mode is not exported anywhere in qubit.json, so this range is used only as the photon-number SCALE. Gamma_ABS is linear in n_drive -- rescale freely.",
+   "reference_rate": {
+    "T1_qp_us_at_xqp_1e6": 5.519965921844335,
+    "Gamma_qp_s": 181160.5386987388,
+    "src": "qubit.json:budgets.T1_stack.qp_full_kernel.T1_us_vs_xqp_T_qp_to_zero['1e-06']"
+   },
+   "omega_drive_rad_s": 911061869541.04,
+   "rows": {
+    "0.5": {
+     "W_lo": {
+      "n_drive_lo": {
+       "W_times_n_drive": 0.00026922335503615165,
+       "gamma0_breakeven_s": 672900531.5100256,
+       "gamma0_breakeven_over_omega_drive": 0.0007385892813723052
+      },
+      "n_drive_hi": {
+       "W_times_n_drive": 0.006730583875903791,
+       "gamma0_breakeven_s": 26916021.260401025,
+       "gamma0_breakeven_over_omega_drive": 2.9543571254892207e-05
+      }
+     },
+     "W_hi": {
+      "n_drive_lo": {
+       "W_times_n_drive": 0.00028897946652230606,
+       "gamma0_breakeven_s": 626897616.217847,
+       "gamma0_breakeven_over_omega_drive": 0.0006880955478179054
+      },
+      "n_drive_hi": {
+       "W_times_n_drive": 0.007224486663057651,
+       "gamma0_breakeven_s": 25075904.648713883,
+       "gamma0_breakeven_over_omega_drive": 2.752382191271622e-05
+      }
+     }
+    },
+    "0.8": {
+     "W_lo": {
+      "n_drive_lo": {
+       "W_times_n_drive": 0.0004095145614519295,
+       "gamma0_breakeven_s": 442378747.3061667,
+       "gamma0_breakeven_over_omega_drive": 0.0004855638920867373
+      },
+      "n_drive_hi": {
+       "W_times_n_drive": 0.010237864036298238,
+       "gamma0_breakeven_s": 17695149.892246667,
+       "gamma0_breakeven_over_omega_drive": 1.9422555683469492e-05
+      }
+     },
+     "W_hi": {
+      "n_drive_lo": {
+       "W_times_n_drive": 0.00045244384885187813,
+       "gamma0_breakeven_s": 400404468.2195413,
+       "gamma0_breakeven_over_omega_drive": 0.00043949207140152904
+      },
+      "n_drive_hi": {
+       "W_times_n_drive": 0.011311096221296954,
+       "gamma0_breakeven_s": 16016178.728781652,
+       "gamma0_breakeven_over_omega_drive": 1.757968285606116e-05
+      }
+     }
+    },
+    "0.95": {
+     "W_lo": {
+      "n_drive_lo": {
+       "W_times_n_drive": 0.0004611059560242092,
+       "gamma0_breakeven_s": 392882669.009002,
+       "gamma0_breakeven_over_omega_drive": 0.0004312359919166873
+      },
+      "n_drive_hi": {
+       "W_times_n_drive": 0.01152764890060523,
+       "gamma0_breakeven_s": 15715306.760360077,
+       "gamma0_breakeven_over_omega_drive": 1.724943967666749e-05
+      }
+     },
+     "W_hi": {
+      "n_drive_lo": {
+       "W_times_n_drive": 0.0005278298250175826,
+       "gamma0_breakeven_s": 343217700.3122249,
+       "gamma0_breakeven_over_omega_drive": 0.0003767227142160231
+      },
+      "n_drive_hi": {
+       "W_times_n_drive": 0.013195745625439567,
+       "gamma0_breakeven_s": 13728708.012488995,
+       "gamma0_breakeven_over_omega_drive": 1.506890856864092e-05
+      }
+     }
+    }
+   },
+   "reading": "gamma0_breakeven_over_omega_drive is the fraction of the drive frequency the unknown vertex rate would have to reach before this channel matched the exported qp-limited relaxation rate. Small numbers mean the channel is cheap to excite -- a weak flag, not a computed rate."
+  },
+  "drive_plane_redesign": {
+   "rule": "Maxwell scale invariance at fixed r/a, t/a and dispersionless eps_core: a -> a * f_old/f_new reproduces the same mode",
+   "a_um_current": 586.735322,
+   "f_current_GHz": 145.0,
+   "f_safe_GHz_W1em3_cosine": 124.38088702157499,
+   "f_safe_GHz_W1em3_exact_cpr": 121.50609752367437,
+   "a_um_required_cosine": 684.0007635195807,
+   "a_um_required_exact_cpr": 700.1839695610632,
+   "a_growth_pct_band": [
+    16.577396633976747,
+    19.33557488483082
+   ],
+   "caveat": "Q_i and V_mode/lambda^3 are scale invariant for a lossless dielectric, but material.json/photonics.json fix tan_delta and the fabrication tolerance budget in ABSOLUTE units; a re-scaled lattice needs its own tolerance run. Not done here -- this is the size of the required move, not a design.",
+   "src": "photonics.json:geometry.a_um_precise / a_provenance"
+  },
+  "abs_cpr_consistency": {
+   "0.5": {
+    "max_abs_residual": 6.265986513354083e-05,
+    "rms_residual": 3.269620266862734e-05,
+    "argmax_over_pi_from_EA": 0.554885,
+    "argmax_over_pi_from_harmonics": 0.55484,
+    "n_harmonics_material": 5,
+    "npts": 400001
+   },
+   "0.8": {
+    "max_abs_residual": 0.004050898245665846,
+    "rms_residual": 0.0019293755130461285,
+    "argmax_over_pi_from_EA": 0.624755,
+    "argmax_over_pi_from_harmonics": 0.62623,
+    "n_harmonics_material": 5,
+    "npts": 400001
+   },
+   "0.95": {
+    "max_abs_residual": 0.05548712112655951,
+    "rms_residual": 0.02223641273242433,
+    "argmax_over_pi_from_EA": 0.7187999999999999,
+    "argmax_over_pi_from_harmonics": 0.75127,
+    "n_harmonics_material": 5,
+    "npts": 400001
+   }
+  }
+ },
+ "part_B_qp_operator": {
+  "verdict": {
+   "headline": "THE P3 BRACKETS SURVIVE, BUT ONLY AS A LOWER BOUND. In the design (cosine) eigenbasis the ABS coherence-factor weight raises |<0|sin(phi/2)|1>|^2 from the exported 3.53475392813e-02 by a factor 1.0308 (p=1/4, normalised) to 1.0955 (p=1/2, bare) at tau = 0.8. The parity bracket |<0|cos(phi/2)|0>|^2 moves by at most 2.93%. Relaxation is FASTER: the exported T1 ladder shortens by 3.0-8.7%.",
+   "T1_statement": "T1(x_qp = 1e-6, T_qp -> 0) = 5.5200 us -> 5.0387 .. 5.3550 us; the total correction against the milestone-1 small-frequency form grows from the booked x1.172491 to x1.2086 .. x1.2845.",
+   "larger_sibling_effect": "A BIGGER effect hides next to it, and it is not the weight: the BARE bracket evaluated in the exact-CPR eigenbasis is 1.1454 times the exported cosine-basis value, because the skewed CPR softens the well (A2 = 0.733) and widens sigma_phi from 0.3831 to 0.4111 rad. Weight and basis together give 1.1856 .. 1.2712. P-extra computed the CPR spectrum but never the qp matrix element, so this number is new -- and it cannot be applied to the exported ladder alone, because the same basis moves f01 to 35.262 GHz.",
+   "claim_limit": "the exponent p is a MODEL CHOICE. Both p = 1/4 and p = 1/2 and both normalisation conventions are quoted; nothing here is a single number. Everything stays parametric in x_qp."
+  },
+  "model": {
+   "weight": "(1 - tau sin^2(phi/2))^(-p) = (Delta/E_A(phi))^(2p)",
+   "p_values": [
+    0.25,
+    0.5
+   ],
+   "status": "MODEL CHOICE, not a measured input",
+   "citation": "Catelani, Schoelkopf, Devoret, Glazman, PRB 84, 064517 (2011); Glazman & Catelani, SciPost Phys. Lect. Notes 31 (2021) -- the high-transparency ABS vertex carries coherence factors ~ Delta/E_A(phi); the exponent p is left open and both 1/4 and 1/2 are quoted",
+   "convention_A": "bare, anchored at the potential minimum: weight(0) = 1, so the tau -> 0 limit returns the exported tunnel-limit bracket exactly",
+   "convention_B": "ground-state normalised: weight / <0|weight|0>, which removes the trivial inflation from weight >= 1 everywhere and isolates the SHAPE correlation"
+  },
+  "rows_by_tau": {
+   "0.5": {
+    "cosine": {
+     "sin_half_01_sq_unweighted": 0.03534753928134748,
+     "cos_half_00_sq_unweighted": 0.9639707071863671,
+     "sin01_unweighted_over_stored": 1.0000000000000009,
+     "cos00_unweighted_over_stored": 1.0000000000000002,
+     "p0.25": {
+      "weight_expectation_0W0": 1.0045719320428113,
+      "sin_half_01_sq_A": 0.03632798727358043,
+      "cos_half_00_sq_A": 0.9724755022319161,
+      "sin_half_01_sq_B": 0.03599807333170956,
+      "cos_half_00_sq_B": 0.9636439304771135,
+      "ratio_sin_A": 1.0277373761276312,
+      "ratio_sin_B": 1.0184039416487858,
+      "ratio_cos_A": 1.008822669591665,
+      "ratio_cos_B": 0.9996610097103392,
+      "ratio_sin_A_vs_stored": 1.027737376127632,
+      "ratio_sin_B_vs_stored": 1.018403941648787,
+      "analytic_leading_order_ratio_A": 1.0265165042944955
+     },
+     "p0.50": {
+      "weight_expectation_0W0": 1.0092070183650501,
+      "sin_half_01_sq_A": 0.03734495652390178,
+      "cos_half_00_sq_A": 0.981131312175193,
+      "sin_half_01_sq_B": 0.03666666696802691,
+      "cos_half_00_sq_B": 0.9633112051531294,
+      "ratio_sin_A": 1.0565079573617822,
+      "ratio_sin_B": 1.0373187982388217,
+      "ratio_cos_A": 1.0178019984019164,
+      "ratio_cos_B": 0.9993158484709949,
+      "ratio_sin_A_vs_stored": 1.0565079573617833,
+      "ratio_sin_B_vs_stored": 1.0373187982388228,
+      "analytic_leading_order_ratio_A": 1.053033008588991
+     }
+    },
+    "exact_cpr": {
+     "sin_half_01_sq_unweighted": 0.037731326899456706,
+     "cos_half_00_sq_unweighted": 0.9614987968471718,
+     "sin01_unweighted_over_stored": 1.067438573280465,
+     "cos00_unweighted_over_stored": 0.9974356997357211,
+     "p0.25": {
+      "weight_expectation_0W0": 1.0048902555868386,
+      "sin_half_01_sq_A": 0.0388434121802467,
+      "cos_half_00_sq_A": 0.9705514999183777,
+      "sin_half_01_sq_B": 0.03846627246706468,
+      "cos_half_00_sq_B": 0.9611281899215868,
+      "ratio_sin_A": 1.0294737919965917,
+      "ratio_sin_B": 1.0194783917768488,
+      "ratio_cos_A": 1.0094151995830785,
+      "ratio_cos_B": 0.9996145528972056,
+      "ratio_sin_A_vs_stored": 1.098900035758472,
+      "ratio_sin_B_vs_stored": 1.0882305600085425,
+      "analytic_leading_order_ratio_A": 1.0265165042944955
+     },
+     "p0.50": {
+      "weight_expectation_0W0": 1.0098524436157046,
+      "sin_half_01_sq_A": 0.03999939816571869,
+      "cos_half_00_sq_A": 0.9797752152137552,
+      "sin_half_01_sq_B": 0.03922271168120113,
+      "cos_half_00_sq_B": 0.9607504747821856,
+      "ratio_sin_A": 1.0601110920987684,
+      "ratio_sin_B": 1.039526433451931,
+      "ratio_cos_A": 1.01900825921625,
+      "ratio_cos_B": 0.9992217129470781,
+      "ratio_sin_A_vs_stored": 1.131603471668705,
+      "ratio_sin_B_vs_stored": 1.1096306130112592,
+      "analytic_leading_order_ratio_A": 1.053033008588991
+     }
+    }
+   },
+   "0.8": {
+    "cosine": {
+     "sin_half_01_sq_unweighted": 0.03534753928134748,
+     "cos_half_00_sq_unweighted": 0.9639707071863671,
+     "sin01_unweighted_over_stored": 1.0000000000000009,
+     "cos00_unweighted_over_stored": 1.0000000000000002,
+     "p0.25": {
+      "weight_expectation_0W0": 1.0074775431469483,
+      "sin_half_01_sq_A": 0.03698360681476824,
+      "cos_half_00_sq_A": 0.9778873049954064,
+      "sin_half_01_sq_B": 0.036436656170974774,
+      "cos_half_00_sq_B": 0.9634253274575337,
+      "ratio_sin_A": 1.0462851889179199,
+      "ratio_sin_B": 1.0308116749219376,
+      "ratio_cos_A": 1.0144367434666755,
+      "ratio_cos_B": 0.9994342362016111,
+      "ratio_sin_A_vs_stored": 1.046285188917921,
+      "ratio_sin_B_vs_stored": 1.0308116749219385,
+      "analytic_leading_order_ratio_A": 1.0424264068711928
+     },
+     "p0.50": {
+      "weight_expectation_0W0": 1.0151295115593089,
+      "sin_half_01_sq_A": 0.03872384023429124,
+      "cos_half_00_sq_A": 0.9922182492771875,
+      "sin_half_01_sq_B": 0.03757816009859946,
+      "cos_half_00_sq_B": 0.9628625673099557,
+      "ratio_sin_A": 1.095517284133139,
+      "ratio_sin_B": 1.0631054059943872,
+      "ratio_cos_A": 1.0293033199870452,
+      "ratio_cos_B": 0.9988504423753228,
+      "ratio_sin_A_vs_stored": 1.0955172841331402,
+      "ratio_sin_B_vs_stored": 1.0631054059943883,
+      "analytic_leading_order_ratio_A": 1.0848528137423856
+     }
+    },
+    "exact_cpr": {
+     "sin_half_01_sq_unweighted": 0.040488583016103336,
+     "cos_half_00_sq_unweighted": 0.9586281833984259,
+     "sin01_unweighted_over_stored": 1.1454427617672602,
+     "cos00_unweighted_over_stored": 0.9944577944660428,
+     "p0.25": {
+      "weight_expectation_0W0": 1.0086325825595646,
+      "sin_half_01_sq_A": 0.04263332027158016,
+      "cos_half_00_sq_A": 0.9745232426038213,
+      "sin_half_01_sq_B": 0.04190667171751678,
+      "cos_half_00_sq_B": 0.9579133257447002,
+      "ratio_sin_A": 1.0529714081281583,
+      "ratio_sin_B": 1.0350244092476497,
+      "ratio_cos_A": 1.01658104725134,
+      "ratio_cos_B": 0.9992542910107323,
+      "ratio_sin_A_vs_stored": 1.2061184777882787,
+      "ratio_sin_B_vs_stored": 1.1855612178251551,
+      "analytic_leading_order_ratio_A": 1.0424264068711928
+     },
+     "p0.50": {
+      "weight_expectation_0W0": 1.0174968548622103,
+      "sin_half_01_sq_A": 0.044934020616194274,
+      "cos_half_00_sq_A": 0.9909607095215829,
+      "sin_half_01_sq_B": 0.04340193870518776,
+      "cos_half_00_sq_B": 0.9571726585803096,
+      "ratio_sin_A": 1.1097948426182975,
+      "ratio_sin_B": 1.0719549925450766,
+      "ratio_cos_A": 1.0337279110744848,
+      "ratio_cos_B": 0.9984816586416683,
+      "ratio_sin_A_vs_stored": 1.2712064695237648,
+      "ratio_sin_B_vs_stored": 1.2278630871510354,
+      "analytic_leading_order_ratio_A": 1.0848528137423856
+     }
+    }
+   },
+   "0.95": {
+    "cosine": {
+     "sin_half_01_sq_unweighted": 0.03534753928134748,
+     "cos_half_00_sq_unweighted": 0.9639707071863671,
+     "sin01_unweighted_over_stored": 1.0000000000000009,
+     "cos00_unweighted_over_stored": 1.0000000000000002,
+     "p0.25": {
+      "weight_expectation_0W0": 1.0089833730710118,
+      "sin_half_01_sq_A": 0.03733492966702815,
+      "cos_half_00_sq_A": 0.9806933010616969,
+      "sin_half_01_sq_B": 0.036673074297413254,
+      "cos_half_00_sq_B": 0.9633080499565834,
+      "ratio_sin_A": 1.0562242924425973,
+      "ratio_sin_B": 1.0375000648705766,
+      "ratio_cos_A": 1.017347616219729,
+      "ratio_cos_B": 0.9993125753460727,
+      "ratio_sin_A_vs_stored": 1.0562242924425982,
+      "ratio_sin_B_vs_stored": 1.0375000648705774,
+      "analytic_leading_order_ratio_A": 1.0503813581595416
+     },
+     "p0.50": {
+      "weight_expectation_0W0": 1.0182231922743126,
+      "sin_half_01_sq_A": 0.03947832471964726,
+      "cos_half_00_sq_A": 0.998022621374556,
+      "sin_half_01_sq_B": 0.03807787863000457,
+      "cos_half_00_sq_B": 0.9626189691830191,
+      "ratio_sin_A": 1.1168620368569633,
+      "ratio_sin_B": 1.077242699326962,
+      "ratio_cos_A": 1.0353246358362687,
+      "ratio_cos_B": 0.9985977395440848,
+      "ratio_sin_A_vs_stored": 1.1168620368569644,
+      "ratio_sin_B_vs_stored": 1.0772426993269628,
+      "analytic_leading_order_ratio_A": 1.100762716319083
+     }
+    },
+    "exact_cpr": {
+     "sin_half_01_sq_unweighted": 0.04399659127694693,
+     "cos_half_00_sq_unweighted": 0.9549513053811779,
+     "sin01_unweighted_over_stored": 1.2446861131338642,
+     "cos00_unweighted_over_stored": 0.9906434897471991,
+     "p0.25": {
+      "weight_expectation_0W0": 1.0113740818994328,
+      "sin_half_01_sq_A": 0.0471198619087049,
+      "cos_half_00_sq_A": 0.9757329421045153,
+      "sin_half_01_sq_B": 0.046065985774198306,
+      "cos_half_00_sq_B": 0.9539098377981361,
+      "ratio_sin_A": 1.070988923030373,
+      "ratio_sin_B": 1.0470353369929295,
+      "ratio_cos_A": 1.021761985774806,
+      "ratio_cos_B": 0.9989094024196072,
+      "ratio_sin_A_vs_stored": 1.3330450398160985,
+      "ratio_sin_B_vs_stored": 1.3032303439155348,
+      "analytic_leading_order_ratio_A": 1.0503813581595416
+     },
+     "p0.50": {
+      "weight_expectation_0W0": 1.02316173002677,
+      "sin_half_01_sq_A": 0.05055364667735494,
+      "cos_half_00_sq_A": 0.9974650174912869,
+      "sin_half_01_sq_B": 0.04829074590770962,
+      "cos_half_00_sq_B": 0.9528161245997205,
+      "ratio_sin_A": 1.1490355323014247,
+      "ratio_sin_B": 1.0976019847476846,
+      "ratio_cos_A": 1.0445192460291357,
+      "ratio_cos_B": 0.9977640945989333,
+      "ratio_sin_A_vs_stored": 1.430188570552961,
+      "ratio_sin_B_vs_stored": 1.3661699481636105,
+      "analytic_leading_order_ratio_A": 1.100762716319083
+     }
+    }
+   }
+  },
+  "stored_reference": {
+   "sin_half_01_sq": 0.03534753928134744,
+   "cos_half_00_sq": 0.9639707071863669,
+   "kernel_correction_already_booked": 1.1724913601591385,
+   "src": "qubit.json:budgets.T1_stack.qp_full_kernel"
+  },
+  "headline_tau_nominal": {
+   "tau": 0.8,
+   "ratios_cosine_basis": {
+    "p0.25_convA": 1.0462851889179199,
+    "p0.25_convB": 1.0308116749219376,
+    "p0.50_convA": 1.095517284133139,
+    "p0.50_convB": 1.0631054059943872
+   },
+   "ratio_band_cosine_basis": [
+    1.0308116749219376,
+    1.095517284133139
+   ],
+   "T1_us_rescaled_cosine_basis": {
+    "lower_bound_R_1.095517": {
+     "1e-08": 503.8684466043978,
+     "1e-07": 50.386844660439785,
+     "1e-06": 5.0386844660439785,
+     "1e-05": 0.5038684466043978
+    },
+    "upper_bound_R_1.030812": {
+     "1e-08": 535.497031721372,
+     "1e-07": 53.54970317213721,
+     "1e-06": 5.354970317213721,
+     "1e-05": 0.535497031721372
+    }
+   },
+   "T1_us_stored": {
+    "1e-08": 551.9965921844334,
+    "1e-07": 55.19965921844335,
+    "1e-06": 5.519965921844335,
+    "1e-05": 0.5519965921844334
+   },
+   "total_correction_vs_smallfreq_band": [
+    1.2086177827971423,
+    1.2844845505511095
+   ]
+  },
+  "exact_cpr_basis": {
+   "bare_element_ratio_vs_stored": 1.1454427617672602,
+   "weighted_ratio_band_vs_stored": [
+    1.1855612178251551,
+    1.2712064695237648
+   ],
+   "f01_GHz_cpr_basis": 35.26207337857237,
+   "f01_GHz_design": 40.5966287014581,
+   "marginality_w_design": 0.5522834405415534,
+   "marginality_w_cpr_basis": 0.4797112427576332,
+   "S_qp_ratio_T0_cpr_over_design": 1.0576139402528046,
+   "caveat": "the exact-CPR eigenbasis is NOT a free ride: it also moves f01 to 35.262 GHz (out/m6/pextra_cpr.json, the deferred qubit.json:open_items.cpr_harmonics flag), which moves S_qp by the factor above. These CPR-basis numbers therefore cannot be applied to the exported T1 ladder without also adopting the P-extra spectrum. Quoted here because the qp MATRIX ELEMENT in the CPR basis is a number P-extra never computed."
+  }
+ },
+ "validation": {
+  "i_regression_brackets": {
+   "digits_sin": 15.00809893428939,
+   "digits_cos": 15.637623611437519,
+   "pass_ge_10_digits": true
+  },
+  "ii_W_to_zero_as_tau_to_zero": {
+   "tau_min_channel_open": 0.02725637222758104,
+   "W_at_tau_0p01": 0.0,
+   "W_at_tau_0p02": 0.0,
+   "statement": "W is identically 0 for tau <= 1 - (f_d/f_2Delta)^2 = 0.027256: below that transparency no phase satisfies 2 E_A(phi) < h f_d",
+   "pass_": true
+  },
+  "iii_basis_consistency": {
+   "W_apex_cosine": 0.3308869140165924,
+   "W_apex_exact_cpr": 0.3655736889589477,
+   "spread_pct": 10.482969701429745,
+   "band": [
+    0.3308869140165924,
+    0.3655736889589477
+   ],
+   "pass_same_order": true
+  },
+  "iv_tau_monotone": {
+   "monotone": true,
+   "W": [
+    0.21753191098569158,
+    0.3308869140165924,
+    0.3725726535402598
+   ]
+  },
+  "v_bulk_window_reproduced": {
+   "recomputed": 0.05857106400995393,
+   "stored": 0.05857106400995393,
+   "reldev": 0.0,
+   "pass_lt_1e_12": true
+  },
+  "vi_abs_generates_stored_cpr": {
+   "max_abs_residual": {
+    "0.5": 6.265986513354083e-05,
+    "0.8": 0.004050898245665846,
+    "0.95": 0.05548712112655951
+   },
+   "statement": "eq. (A) differentiated gives material.json's stored Beenakker harmonics; the residual is the documented 5-harmonic truncation (qubit/cpr_transmon.py Sec. 4), not a model mismatch"
+  },
+  "vii_grid_and_truncation_convergence": {
+   "W_apex_n_phi_8192": 0.3308869140165924,
+   "W_apex_n_phi_32768": 0.330886924011331,
+   "W_apex_reldev_grid": 3.020590470317119e-08,
+   "W_apex_N35": 0.3308869140165924,
+   "W_apex_N50": 0.33088691401659265,
+   "W_apex_reldev_N": 6.710588890617076e-16,
+   "weighted_sin01_n_phi_8192": 0.03872384023429124,
+   "weighted_sin01_n_phi_32768": 0.03872384023429122,
+   "weighted_sin01_reldev": 5.375675962346272e-16
+  },
+  "viii_wavefunction_tail_floor": {
+   "p0_at_minus_pi": 4.43994489083015e-12,
+   "note": "|psi0|^2 at the branch edge is 4.4e-12, so W values below ~1e-10 are at the charge-basis tail floor and are reported as bounds, not measurements"
+  }
+ },
+ "params": {
+  "EJ_GHz": 149.0050531997167,
+  "EC_GHz": 1.490050531997167,
+  "EJ_over_EC": 100,
+  "N_charge": 35,
+  "N_charge_conv": 50,
+  "n_phi": 8192,
+  "n_phi_conv": 32768,
+  "f_drive_GHz": 145.0,
+  "two_Delta_over_h_GHz": 147.01374591876302,
+  "Delta0_meV": 0.304,
+  "Delta_apex_dome_meV": 0.3040076029220178,
+  "nu_apex": -2.4,
+  "nu_halfwidth": 0.5,
+  "taus_material": [
+   0.5,
+   0.8,
+   0.95
+  ],
+  "tau_nominal": 0.8,
+  "W_targets": [
+   0.001,
+   0.01,
+   0.1
+  ],
+  "p_exponents": [
+   0.25,
+   0.5
+  ],
+  "n_drive_range": [
+   0.0012376269477716313,
+   0.030940673694290783
+  ],
+  "hbar_over_h": 0.15915494309189535
+ },
+ "provenance": {
+  "task": "M6 exploration item 1/5 -- ABS pair-breaking audit + ABS-weighted qp matrix elements",
+  "script": "scripts/explore_abs_pair_breaking_audit.py",
+  "deterministic": true,
+  "rng": "unused (no stochastic step anywhere)",
+  "seed": null,
+  "reads": {
+   "EJ/EC/N_charge": "qubit/inputs.py (junction.json:contract.Ic_nA, qubit_targets.json:design.EJ_over_EC)",
+   "Delta0_meV / sc_dome": "material.json (via qubit/dome.py)",
+   "cpr.harmonics_by_tau / tau_nominal": "material.json:cpr",
+   "f_cav_GHz": "qubit_targets.json:inputs.f_cav_GHz",
+   "two_Delta_over_h": "qubit/qp_kernel.py:two_delta_GHz()",
+   "matrix_elements / T1 ladder / kernel_correction": "qubit.json:budgets.T1_stack.qp_full_kernel",
+   "bulk nu window / fork": "qubit.json:allocation.fixed_drive",
+   "n_drive": "qubit.json:two_cavity.control_line.rabi_budget",
+   "a_um_precise": "photonics.json:geometry.a_um_precise",
+   "f01 in the CPR basis": "out/m6/pextra_cpr.json:fixed_Ic['0.8']",
+   "p3 matrix elements": "out/m6/p3_qp.json:kernel.matrix_elements"
+  },
+  "package_functions_used": [
+   "qubit.spectrum.hamiltonian",
+   "qubit.spectrum.levels",
+   "qubit.cpr_transmon.hamiltonian",
+   "qubit.cpr_transmon.harmonics",
+   "qubit.cpr_transmon.cpr_current",
+   "qubit.cpr_transmon.cpr_argmax",
+   "qubit.dome.Delta_of",
+   "qubit.qp_kernel.matrix_elements",
+   "qubit.qp_kernel.two_delta_GHz",
+   "qubit.qp_kernel.marginality",
+   "qubit.qp_kernel.kernel_shape_ratio_T0"
+  ],
+  "modified_files": "none -- qubit/, tests/, paper/, figs/ untouched",
+  "claim_discipline": "threshold + weight audit only. Gamma_ABS is quoted parametrically with a FREE gamma_0; the ABS coherence-factor exponent p is a model choice quoted as a band over p and over two normalisation conventions and two eigenbases. No absolute TBG coherence claim."
+ }
+}

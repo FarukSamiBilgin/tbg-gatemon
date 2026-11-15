@@ -1,0 +1,38 @@
+Figure 3 (paper 2) -- T1/T2 coherence budget.
+
+(a) T1 vs normalised quasiparticle density x_qp. Solid blue: the full
+Catelani-type kernel at T_qp -> 0, src: out/m6/p3_qp.json:
+kernel.T1_us_vs_xqp["T_qp->0"] = {1e-08: 551.9965921844334, 1e-07: 55.19965921844335, 1e-06: 5.519965921844335, 1e-05: 0.5519965921844334}. Dashed
+(open markers): the small-frequency reference formula, src:
+qubit_targets.json:quasiparticle.T1_us = {1e-08: 647.2112351735356, 1e-07: 64.72112351735356, 1e-06: 6.4721123517353565, 1e-05: 0.6472112351735356}
+(the full kernel is 1.1725x shorter at the
+design point, marginality hbar*w_q/Delta = 0.5523,
+src: out/m6/p3_qp.json:kernel.ratio_vs_smallfreq / w_marginality).
+
+Purcell-limited T1 floors (horizontal lines): drive cavity, P2 beta-corrected,
+5290.8 us (src: out/m6/p2_coupling.json:
+drive_cavity_corrected.T1_Purcell_us); readout, P5 recommended point,
+36.06 us (src: out/m6/p5_two_cavity.json:
+recommended_point.T1_Purcell_us).
+
+Thermal quasiparticle-density floor x_qp_th(T) = sqrt(2 pi kB T/Delta)
+exp(-Delta/kB T): at 200 mK, x_qp_th = 1.3043e-08 (inside the plotted
+range); at 100 mK, x_qp_th = 2.0156e-16 (far below the plotted range,
+annotated off-scale). src: out/m6/p3_qp.json:thermal_floor.x_qp_th. Per that
+artifact's verdict, the parametric band 1e-8..1e-5 is entirely
+non-equilibrium at the 100 mK operating point.
+
+(b) T2 vs 1/f gate-noise amplitude A, at the apex (nu=-2.4, solid) and at
+nu=-2.5 (dashed, open markers), Ramsey (blue circles) and echo (green
+squares), src: out/m6/p4_t2_maps.npz (T2_ramsey, T2_echo). Dash-dot black:
+the frozen-parity dephasing bound 1/(pi*eps1) = 8.505e+03 us, src:
+out/m6/p3_qp.json:parity.Tphi_parity_frozen_worst_case_s. Vertical red dotted
+line: validity limit for the additive (chi_1+chi_2) T2 map, A <= 1e-3, src:
+paper/decisions.md 2026-07-27 M6 P4 entry ("Quote the additive map for
+A <= 1e-3 only" -- the exact linear+quadratic determinant, carried as
+T2_*_exact in the npz, should be used above this amplitude).
+
+src: out/m6/p3_qp.json (kernel, thermal_floor, parity), qubit_targets.json:
+quasiparticle, out/m6/p2_coupling.json:drive_cavity_corrected,
+out/m6/p5_two_cavity.json:recommended_point, out/m6/p4_t2_maps.npz.
+Deterministic; no RNG (P3/P4 are closed-form/quadrature, no stochastic step).

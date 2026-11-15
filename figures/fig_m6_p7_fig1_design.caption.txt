@@ -1,0 +1,33 @@
+Figure 1 (paper 2) -- TBG gatemon design scan: f01, |anharm|, eps1 vs E_J/E_C.
+
+f01 (GHz, left axis, blue circles) and |anharmonicity| (GHz, left axis, orange
+squares) at E_J/E_C = {25,50,100,150,200,300}, src: qubit_targets.json:scan.
+Design lock at E_J/E_C = 100 (dashed vertical line), src:
+qubit_targets.json:design.EJ_over_EC. Reduced-unit conversion: E_J/h =
+149.0051 GHz is fixed across the scan (src: qubit/inputs.py:EJ_GHZ <-
+junction.json:contract.Ic_nA, v0.3 junction Ic=300 nA); E_C/h = (E_J/h)/ratio
+sets C_Sigma via E_C = e^2/2C (qubit_targets.json:scan.<ratio>.C_fF).
+
+Charge dispersion eps1 (Hz, right axis, log, red triangles dashed) is the
+float64 value from qubit_targets.json:scan.<ratio>.eps1_Hz. The scan
+criterion eps1 < 10 kHz is marked (crimson dotted line),
+src: qubit/inputs.py:EPS1_MAX_HZ (M6_BRIEF.md Sec. 1 design criterion).
+
+mpmath-corrected series (dark-red open diamonds, solid): eps1 recomputed at
+ratios 150/200/300 with qubit.spectrum.eps1_mp (Sturm-sequence bisection on
+the tridiagonal charge Hamiltonian, dps=60, N=35) -- values 7.3528e-02,
+3.7680e-04, 5.2805e-08 Hz, matching the reference
+figures quoted for this deliverable (src: qubit/spectrum.py:eps1_mp; policy
+per paper/decisions.md 2026-07-27 "M6 finding: eps1 is ULP-conditioned already
+at ratio 100" -- "Production rule: use spectrum.eps1_mp for any ratio >= 150").
+
+Hatched grey band (ratio >= 200): float64 floor region flagged non-monotonic
+and unreliable by the same decisions.md entry -- the mpmath bisection quoted
+above (dps=60) is the not the float64 series and should be read there instead,
+per that entry's cross-checks (ratio 150: -0.6%, ratio 200: -28%, ratio 300:
+4.5 decades high and sign-unstable relative to float64).
+
+src: qubit_targets.json:scan, qubit_targets.json:design.EJ_over_EC,
+qubit/inputs.py:EJ_GHZ,EPS1_MAX_HZ, qubit/spectrum.py:eps1_mp (N=35, dps=60).
+Deterministic; no RNG (mpmath bisection is a fixed-point iteration, not a
+stochastic step).
